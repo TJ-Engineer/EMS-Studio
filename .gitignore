@@ -1,0 +1,25 @@
+# Out-of-source CMake builds
+/build/
+/out/
+
+# CMake-generated files created by an accidental in-source configure
+/CMakeCache.txt
+/CMakeFiles/
+/cmake_install.cmake
+/CTestTestfile.cmake
+/Makefile
+/Testing/
+
+# Compiler and tooling output
+compile_commands.json
+.cache/
+.clangd/
+
+# Editors and operating systems
+.idea/
+.vscode/
+*.swp
+*~
+.DS_Store
+Thumbs.db
+*:Zone.Identifier

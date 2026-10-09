@@ -1,0 +1,13 @@
+oep_add_boundary_library(app_shell app_shell)
+oep_add_boundary_library(interaction interaction)
+oep_add_boundary_library(document document)
+oep_add_boundary_library(ipc ipc)
+oep_add_boundary_library(persistence persistence)
+oep_add_boundary_library(automation automation)
+oep_add_boundary_library(sync sync)
+
+target_link_libraries(oep_app_shell INTERFACE oep::interaction oep::document oep::ipc)
+target_link_libraries(oep_interaction INTERFACE oep::document)
+target_link_libraries(oep_persistence INTERFACE oep::document)
+target_link_libraries(oep_automation INTERFACE oep::document oep::ipc)
+target_link_libraries(oep_sync INTERFACE oep::document oep::persistence)
