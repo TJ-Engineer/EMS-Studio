@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 Open Engineering Platform contributors
+# SPDX-License-Identifier: MIT
+
 add_executable(oep_cad_studio main.cpp)
 oep_apply_target_defaults(oep_cad_studio)
 target_compile_definitions(oep_cad_studio PRIVATE OEP_VERSION="${PROJECT_VERSION}")

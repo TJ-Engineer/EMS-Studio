@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 Open Engineering Platform contributors
+# SPDX-License-Identifier: MIT
+
 function(oep_add_boundary_library target_name relative_path)
     add_library(oep_${target_name} INTERFACE)
     add_library(oep::${target_name} ALIAS oep_${target_name})

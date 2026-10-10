@@ -4,7 +4,7 @@ This repository is the clean-sheet implementation workspace for the coordinated 
 
 ## Development progress
 
-The [development storyboard](docs/DEVELOPMENT_STORYBOARD.md) records the completed platform and first end-to-end CAD reels, the validated ASIR boundary and Maxwell harness, and the current reference FDTD frame on the path to the first EM milestone.
+The [development storyboard](docs/DEVELOPMENT_STORYBOARD.md) records the completed platform and first end-to-end CAD reels, validated ASIR boundary, Maxwell harness, FP64 reference Yee solver, RMS multiport contract, and traceable CAD-to-grid spike, along with the next cost-model frame on the path to the first EM milestone.
 
 ## Build
 
@@ -43,3 +43,7 @@ Build products stay under `build/` and are not source-controlled.
 - `docs/`: architecture, decision records, and implementation plans.
 
 Module directories intentionally begin with only boundary documentation. A module receives a compiled target when its first implementation slice is added.
+
+## License
+
+Project-owned software and documentation are available under the [MIT License](LICENSE). Third-party dependencies and imported artifacts retain their own licenses and notices.

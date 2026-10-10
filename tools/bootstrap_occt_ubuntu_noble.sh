@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# SPDX-FileCopyrightText: 2026 Open Engineering Platform contributors
+# SPDX-License-Identifier: MIT
 
 set -euo pipefail
 

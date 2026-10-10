@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 Open Engineering Platform contributors
+// SPDX-License-Identifier: MIT
+
 #include <oep/modeler/kernel_adapter.hpp>
 
 #include <algorithm>

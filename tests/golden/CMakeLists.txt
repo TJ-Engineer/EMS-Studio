@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 Open Engineering Platform contributors
+# SPDX-License-Identifier: MIT
+
 add_library(
     oep_cad_kernel_corpus
     STATIC
@@ -120,6 +123,43 @@ target_link_libraries(
 )
 oep_apply_target_defaults(maxwell_harness_test)
 add_test(NAME golden.maxwell_harness COMMAND maxwell_harness_test)
+
+add_executable(
+    reference_fdtd_maxwell_test
+    em/reference_fdtd_maxwell_test.cpp
+)
+target_link_libraries(
+    reference_fdtd_maxwell_test
+    PRIVATE
+        oep::fdtd_engine
+        oep_maxwell_verification_harness
+)
+oep_apply_target_defaults(reference_fdtd_maxwell_test)
+add_test(NAME golden.reference_fdtd_maxwell COMMAND reference_fdtd_maxwell_test)
+
+add_library(
+    oep_port_contract_harness
+    STATIC
+        em/port_contract_harness.cpp
+)
+target_include_directories(
+    oep_port_contract_harness
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/em/include
+)
+oep_apply_target_defaults(oep_port_contract_harness)
+
+add_executable(
+    port_contract_harness_test
+    em/port_contract_harness_test.cpp
+)
+target_link_libraries(
+    port_contract_harness_test
+    PRIVATE
+        oep_port_contract_harness
+)
+oep_apply_target_defaults(port_contract_harness_test)
+add_test(NAME golden.port_contract_harness COMMAND port_contract_harness_test)
 
 if(TARGET oep_occt_geometry_kernel)
     add_executable(

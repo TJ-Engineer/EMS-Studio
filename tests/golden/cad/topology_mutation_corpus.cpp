@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 Open Engineering Platform contributors
+// SPDX-License-Identifier: MIT
+
 #include <oep/test/topology_mutation_corpus.hpp>
 
 #include <oep/topology_id/topology_identity.hpp>

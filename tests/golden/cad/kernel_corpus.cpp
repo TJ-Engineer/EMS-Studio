@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 Open Engineering Platform contributors
+// SPDX-License-Identifier: MIT
+
 #include <oep/test/kernel_corpus.hpp>
 
 #include <algorithm>

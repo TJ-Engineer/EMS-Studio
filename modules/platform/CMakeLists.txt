@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 Open Engineering Platform contributors
+# SPDX-License-Identifier: MIT
+
 oep_add_boundary_library(app_shell app_shell)
 oep_add_boundary_library(interaction interaction)
 oep_add_boundary_library(ipc ipc)

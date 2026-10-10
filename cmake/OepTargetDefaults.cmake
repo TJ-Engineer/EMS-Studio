@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 Open Engineering Platform contributors
+# SPDX-License-Identifier: MIT
+
 function(oep_apply_target_defaults target_name)
     target_compile_features(${target_name} PRIVATE cxx_std_20)
 

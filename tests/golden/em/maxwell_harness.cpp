@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 Open Engineering Platform contributors
+// SPDX-License-Identifier: MIT
+
 #include <oep/test/maxwell_harness.hpp>
 
 #include <algorithm>

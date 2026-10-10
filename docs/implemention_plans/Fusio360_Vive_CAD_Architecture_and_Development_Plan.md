@@ -774,7 +774,7 @@ Targets must be confirmed during Phase 0 on named reference hardware.
 ## 11. Immediate next actions
 
 1. Approve the V1 boundary: mechanical CAD, not the complete Fusion portfolio.
-2. Approve the open-source licensing charter: permissive versus copyleft application licenses, contribution policy and acceptable dependency licenses.
+2. Use the approved MIT license for project-owned work; complete the contribution policy and acceptable-dependency register before distribution.
 3. Evaluate Siemens Parasolid/D-Cubed and Tech Soft 3D only as optional commercial components; keep a documented fully open distribution path.
 4. Stand up an OCCT/Qt prototype in parallel so architectural learning begins immediately.
 5. Build the golden-model corpus before building feature count.

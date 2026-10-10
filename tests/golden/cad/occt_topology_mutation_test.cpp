@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 Open Engineering Platform contributors
+// SPDX-License-Identifier: MIT
+
 #include <oep/modeler/occt_geometry_kernel.hpp>
 #include <oep/test/topology_mutation_corpus.hpp>
 

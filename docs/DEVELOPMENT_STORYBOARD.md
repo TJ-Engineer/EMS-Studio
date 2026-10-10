@@ -1,8 +1,8 @@
 # Development Storyboard
 
-**Status date:** October 9, 2026
+**Status date:** October 10, 2026
 
-**Current frame:** The Maxwell verification harness is verified. Implement the FP64 reference CPU Yee update loop against its frozen acceptance contract.
+**Current frame:** The reference solver, RMS multiport contract, and traceable CAD-to-grid spike pass their acceptance suites. The next implementation target is the measured cell, memory, step-count, runtime, and checkpoint cost model.
 
 This storyboard translates the [architecture and development plan](implemention_plans/Fusio360_Vive_CAD_Architecture_and_Development_Plan.md) into visible product scenes. A completed panel means its stated evidence exists and passes; the panels are not equal in effort, so their count is not a project-completion percentage.
 
@@ -95,10 +95,10 @@ The first CAD reel ends with this user-visible story:
 flowchart LR
     A["✅ ASIR 0.1<br/>units, roles, provenance"]
     V["✅ Maxwell harness<br/>1-D, cavity, waveguide"]
-    D["▶ Reference FDTD<br/>CPU Yee updates"]
-    N["○ Port contract harness<br/>RMS waves + phase anchors"]
-    X["○ CAD-to-grid spike<br/>roles + material cells"]
-    E["○ Cost estimator<br/>cells, memory, runtime"]
+    D["✅ Reference FDTD<br/>CPU Yee updates"]
+    N["✅ Port contract harness<br/>RMS waves + phase anchors"]
+    X["✅ CAD-to-grid spike<br/>roles + material cells"]
+    E["▶ Cost estimator<br/>cells, memory, runtime"]
     G["◇ EM Gate 0<br/>correctness + predicted cost"]
 
     A --> X --> G
@@ -110,9 +110,8 @@ flowchart LR
     classDef done fill:#176b3a,color:#ffffff,stroke:#0d4d29,stroke-width:2px;
     classDef planned fill:#e5e7eb,color:#111827,stroke:#6b7280,stroke-width:1px;
     classDef gate fill:#4338ca,color:#ffffff,stroke:#312e81,stroke-width:3px;
-    class A,V done;
-    class D current;
-    class N,X,E planned;
+    class A,V,D,N,X done;
+    class E current;
     class G gate;
 ```
 
@@ -124,10 +123,10 @@ The first EM reel ends with this user-visible story:
 |---|---|---|
 | ✅ ASIR 0.1 | Evaluated-CAD authority, dimensioned SI values, exact-body references, persistent EM roles, materials, ports, boundaries, solver/mesh policy, budgets, monitors, goals, provenance, and content identity | The [compiled ASIR contract](../modules/em/simulation_ir/include/oep/simulation_ir/simulation_ir.hpp), [versioned schema](../schemas/simulation_ir/asir-0.1.md), and [validation suite](../tests/unit/simulation_ir_test.cpp) accept a complete antenna study and reject stale/failed CAD state, missing topology, duplicate ports, unspecified dimensions, invalid material bands, and authority violations; fingerprints are canonical SHA-256 values |
 | ✅ Maxwell harness | Independent analytic fixtures and error metrics for one-dimensional propagation, rectangular cavity, and waveguide modes | The [compiled oracle](../tests/golden/em/include/oep/test/maxwell_harness.hpp) and [canonical cases](../tests/golden/em/maxwell_harness.cpp) freeze analytic values, typed invalid-mode and cutoff failures, convergence criteria, conservation checks, and restart expectations; the [contract suite](../tests/golden/em/maxwell_harness_test.cpp) verifies the formulas and assessment behavior documented in the [harness guide](../tests/golden/em/README.md) |
-| ▶ Reference FDTD | Double-precision CPU Yee updates, stable time step, sources, probes, PEC/open boundaries, and restart | The Maxwell fixtures converge within their declared per-case tolerances |
-| Port contract harness | Versioned RMS power-wave, orientation, phase-anchor, reference-plane, and reconstruction conventions | Analytic four-port reconstruction, passivity, reciprocity, and reference-plane shift fixtures pass |
-| CAD-to-grid spike | Persistent roles and material regions converted into traceable Cartesian cells | Cell/material/port mappings retain CAD IDs and report unresolved geometry and staircasing risks |
-| Cost estimator | Cell, memory, time-step, runtime, and storage prediction with hard budgets | Predicted scaling and tiny-feature impact are checked against measured reference runs |
+| ✅ Reference FDTD | Double-precision CPU Yee updates, stable time step, sources, probes, PEC/open boundaries, and restart | The [compiled reference API](../modules/em/fdtd_engine/include/oep/fdtd/reference_fdtd.hpp) and [Yee implementation](../modules/em/fdtd_engine/src/reference_fdtd.cpp) provide typed configuration, 1-D periodic/PEC/Mur boundaries, 3-D PEC updates, source/probe access, discrete energy and dispersion, and checksummed restart; the [unit contract](../tests/unit/reference_fdtd_test.cpp) and [golden acceptance suite](../tests/golden/em/reference_fdtd_maxwell_test.cpp) pass every frozen tolerance documented in the [module guide](../modules/em/fdtd_engine/README.md) and [ADR 0004](architecture/decisions/0004-fp64-yee-reference-solver.md) |
+| ✅ Port contract harness | Versioned RMS power-wave, orientation, phase-anchor, reference-plane, and reconstruction conventions | The independent [compiled port oracle](../tests/golden/em/include/oep/test/port_contract_harness.hpp), [analytic four-port fixture](../tests/golden/em/port_contract_harness.cpp), and [golden contract suite](../tests/golden/em/port_contract_harness_test.cpp) prove RMS power identity, deterministic modal anchoring, matched inactive ports, complex-drive S/field reconstruction, explicit metric denominators, passivity, reciprocity, and reversible plane shifts under [ADR 0005](architecture/decisions/0005-versioned-rms-port-contract.md) |
+| ✅ CAD-to-grid spike | Persistent roles and material regions converted into traceable Cartesian cells | The compiled [geometry preparation contract](../modules/em/em_geometry/include/oep/em_geometry/computational_geometry.hpp) and [Cartesian grid contract](../modules/em/em_mesh/include/oep/em_mesh/cartesian_grid.hpp) retain ASIR/geometry hashes, material catalogs, role IDs, port metadata, and persistent CAD IDs through exact box/patch subcell mappings; the [acceptance suite](../tests/unit/cad_to_grid_test.cpp) proves deterministic ordering, volume conservation, unresolved/stale identity rejection, hard cell budgets, material conflict rejection, and explicit staircasing risk under [ADR 0006](architecture/decisions/0006-traceable-axis-aligned-cad-grid-spike.md) |
+| ▶ Cost estimator | Cell, memory, time-step, runtime, and storage prediction with hard budgets | Predicted scaling and tiny-feature impact are checked against measured reference runs |
 
 ## Gate 0 convergence
 
@@ -135,8 +134,8 @@ The first EM reel ends with this user-visible story:
 flowchart TB
     PLATFORM["Platform lane<br/>document + DAG + recovery complete<br/>worker contract planned"]
     CAD["CAD lane<br/>✅ Reel 2 foundation gate passed"]
-    EM["EM lane<br/>▶ reference FDTD, grid mapping, cost model"]
-    PRODUCT["Product lane<br/>V1 requirements + licensing + support matrix"]
+    EM["EM lane<br/>▶ cost model; grid + port contracts complete"]
+    PRODUCT["Product lane<br/>MIT source license; dependency + support matrix planned"]
     GATE["◇ Gate 0<br/>evidence-based V1 build decision"]
 
     PLATFORM --> GATE
@@ -158,31 +157,39 @@ Gate 0 is reached only when all four lanes provide evidence. A polished shell or
 
 ## Current development frame
 
-The Maxwell harness now fixes the independent standard that the reference solver must meet:
+The reference FDTD engine and port harness now provide the first native numerical Maxwell path and its normalized multiport boundary:
 
-1. Lossless plane-wave references calculate phase velocity, wavelength, impedance, and wavenumber from frequency and relative material constants.
-2. Rectangular PEC-cavity references calculate TE/TM eigenfrequencies with valid modal-index rules; rectangular-waveguide references calculate cutoff, propagation constant, guide wavelength, phase/group velocity, and mode impedance.
-3. Invalid materials and mode indices, nonpositive dimensions, nonfinite inputs, and operation at or below waveguide cutoff produce typed diagnostics rather than usable reference values.
-4. Reusable metrics cover scalar relative error, relative field L2 error, absolute L-infinity error, observed refinement order, and normalized energy residual.
-5. The plane-wave, TM111 cavity, and WR90 TE10 cases declare independent phase/frequency/propagation and field limits. Every case also requires energy accounting, observed convergence order of at least 1.8, and FP64 restart agreement within `1e-12` L-infinity error.
-6. Case assessment rejects missing, duplicate, nonfinite, and out-of-tolerance observations. Analytic identities, scale behavior, negative paths, metric calculations, and assessment failures are compiled tests.
-7. All 14 default and 17 OCCT-enabled checks pass in normal and ASan/UBSan builds. The harness remains in the golden test tree and has no dependency on future solver internals.
+1. One-dimensional and three-dimensional FP64 grids store electric and magnetic components at conventional staggered Yee locations and advance them with explicit leapfrog curl updates.
+2. The time step is derived from grid spacing, lossless material constants, dimensionality, and a validated Courant factor. Invalid grid sizes, material values, boundary combinations, sources, and checkpoints produce typed diagnostics; unsupported modal-dispersion requests return no result.
+3. The 1-D path supports paired periodic, PEC, and first-order Mur boundaries. The 3-D path currently supports PEC faces; three-dimensional CPML remains later work.
+4. Explicit hard/soft electric sources and staggered probes are validated before mutation. Read-only field spans expose complete verification state.
+5. Versioned binary checkpoints cover grid/material policy, step index, discrete energy, and every field value. Bounds, dimensionality, field extents, finite values, version, trailing bytes, and checksum are verified before restore.
+6. Plane-wave propagation records phase error `5.46e-4`, field L2 `3.47e-3`, Mur reflection `1.27e-5`, convergence order `2.024`, roundoff-scale energy residual, and bit-exact restart.
+7. The TM111 cavity records frequency error `2.69e-3`, field L2 `3.28e-5`, order `2.047`, roundoff-scale energy residual, and bit-exact restart. Its time-stepped zero crossings agree with the stencil prediction.
+8. The WR90 TE10 case records cutoff error `2.47e-3`, propagation error `1.60e-3`, order `2.002`, roundoff-scale field/energy errors, and bit-exact restart.
+9. Port contract `oep-rms-power-wave-1.0` fixes RMS `exp(+jωt)` phasors, inward current, positive-real impedance, `sqrt(W)` incident/outgoing waves, and radiated/accepted/incident metric denominators.
+10. The four-port fixture reconstructs two stored complex simultaneous drives from matched one-port basis runs within `1e-12`; its maximum power gain is `0.1726874826`, reciprocity error is zero, and lossless reference-plane shifts preserve both properties.
+11. Weak modal overlaps, ambiguous degenerate bases, invalid orientations, cutoff modes, unmatched inactive ports, non-positive impedance, and inconsistent vector dimensions fail with typed diagnostics.
+12. The CAD-to-grid spike rejects stale or unresolved topology before mapping. Stable ASIR role order, exact geometry hashes, material catalogs, and persistent CAD feature/local IDs survive into material, surface, port-face, and reference-plane cell records.
+13. Analytic box/patch intersections preserve subcell volume and area. The fixture maps a `4 × 3 × 2` domain, conserves the offset substrate volume, and reports its `1.5`-cell minimum dimension as high staircasing risk instead of silently accepting the binary approximation.
+14. Grid limits, out-of-domain geometry, overlapping material volumes, invalid dominant-material policy, and unmappable surfaces fail with typed diagnostics. Axis-aligned primitives and diagnostic subcells are the present boundary; general B-rep intersection and heterogeneous FDTD updates remain unfinished.
 
-The active panel is the reference FDTD engine: implement the minimal FP64 CPU Yee field state, Courant-stable stepping, analytic-case sources and probes, PEC/open boundary behavior, and restart state needed to produce the harness observations. No numerical field solver exists yet.
+The active panel is the cost estimator: use the now-runnable reference grids to predict cells, FP64 field and checkpoint memory, Courant-limited steps, runtime, and storage, then calibrate those predictions against measured runs and explicit resource budgets.
 
 ## Progress snapshot
 
 | Area | Present state |
 |---|---|
 | Build | C++20 CMake/Ninja monorepo; four process targets; optional locally bootstrapped OCCT build |
-| Compiled libraries | `oep::document`, `oep::persistence`, `oep::sketch`, `oep::modeler`, `oep::topology_id`, `oep::cad_feature_model`, `oep::simulation_ir`, and optional `oep::occt_geometry_kernel` |
-| Automated checks | Default preset: fourteen CTest entries; OCCT preset: seventeen entries including ASIR validation, the Maxwell oracle, exact-kernel, topology-mutation, and full modeling-thread coverage |
-| Strictness | Warnings treated as errors; default and OCCT builds pass; all 14 default and 17 OCCT-enabled checks pass ASan/UBSan with leak checking disabled under the traced test environment |
+| Project license | Project-owned code and documentation use MIT with SPDX headers on source, build, and script files; dependency licensing and contribution policy remain open product-lane work |
+| Compiled libraries | `oep::document`, `oep::persistence`, `oep::sketch`, `oep::modeler`, `oep::topology_id`, `oep::cad_feature_model`, `oep::simulation_ir`, `oep::em_geometry`, `oep::em_mesh`, `oep::fdtd_engine`, and optional `oep::occt_geometry_kernel` |
+| Automated checks | Default preset: eighteen CTest entries; OCCT preset: twenty-one entries including ASIR validation, CAD-to-grid mapping, Maxwell and port oracles, FDTD acceptance, exact-kernel, topology-mutation, and full modeling-thread coverage |
+| Strictness | Warnings treated as errors; default and OCCT builds pass; all 18 default and 21 OCCT-enabled checks pass ASan/UBSan with leak checking disabled under the traced test environment |
 | Data safety | Typed stale-geometry denial, DAG and journal replay validation, bounded checkpoint decoding, checksum verification, atomic replacement |
 | Feature evaluation | Stable feature IDs and typed inputs; deterministic topological scheduling; minimal dirty propagation; blocked descendants; atomic cycle rejection |
 | Geometry capability | Deterministic constrained sketches; kernel-neutral exact-body features; persistent topology decisions; restart-safe sketch → extrude → fillet → attached sketch → cut evaluation |
 | Desktop capability | Process entry points exist; Qt UI and viewport are not implemented yet |
-| EM capability | Validated, fingerprinted ASIR 0.1 and the independent analytic Maxwell acceptance harness are complete; the FP64 reference CPU FDTD engine is the active work |
+| EM capability | Validated ASIR 0.1, independent Maxwell and RMS multiport harnesses, the FP64 reference CPU Yee solver, and traceable axis-aligned CAD-to-grid mapping are complete; resource-cost calibration is next, while general B-rep intersection, 3-D CPML, calibrated solver ports, heterogeneous updates, production kernels, and normalized result storage remain planned |
 
 ## Updating this storyboard
 

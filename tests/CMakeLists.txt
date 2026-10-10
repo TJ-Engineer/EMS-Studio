@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 Open Engineering Platform contributors
+# SPDX-License-Identifier: MIT
+
 if(TARGET oep_cad_studio)
     add_test(NAME smoke.cad_studio COMMAND oep_cad_studio)
 endif()

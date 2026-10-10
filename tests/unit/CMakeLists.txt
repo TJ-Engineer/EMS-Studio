@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 Open Engineering Platform contributors
+# SPDX-License-Identifier: MIT
+
 add_executable(document_state_machine_test document_state_machine_test.cpp)
 oep_apply_target_defaults(document_state_machine_test)
 target_link_libraries(document_state_machine_test PRIVATE oep::document)
@@ -33,3 +36,15 @@ oep_apply_target_defaults(simulation_ir_test)
 target_link_libraries(simulation_ir_test PRIVATE oep::simulation_ir)
 
 add_test(NAME unit.simulation_ir COMMAND simulation_ir_test)
+
+add_executable(reference_fdtd_test reference_fdtd_test.cpp)
+oep_apply_target_defaults(reference_fdtd_test)
+target_link_libraries(reference_fdtd_test PRIVATE oep::fdtd_engine)
+
+add_test(NAME unit.reference_fdtd COMMAND reference_fdtd_test)
+
+add_executable(cad_to_grid_test cad_to_grid_test.cpp)
+oep_apply_target_defaults(cad_to_grid_test)
+target_link_libraries(cad_to_grid_test PRIVATE oep::em_mesh)
+
+add_test(NAME unit.cad_to_grid COMMAND cad_to_grid_test)

@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 Open Engineering Platform contributors
+# SPDX-License-Identifier: MIT
+
 add_executable(oep_simulation_worker main.cpp)
 oep_apply_target_defaults(oep_simulation_worker)
 target_compile_definitions(oep_simulation_worker PRIVATE OEP_VERSION="${PROJECT_VERSION}")

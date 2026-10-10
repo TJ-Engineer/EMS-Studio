@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 Open Engineering Platform contributors
+# SPDX-License-Identifier: MIT
+
 add_library(oep_sketch STATIC sketch/src/sketch.cpp)
 add_library(oep::sketch ALIAS oep_sketch)
 target_include_directories(

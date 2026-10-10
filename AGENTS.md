@@ -11,3 +11,12 @@
 - Keep the status date and progress snapshot current.
 - State unfinished capabilities plainly and do not treat panel count as percent complete.
 - Keep detailed architecture in the implementation plan and decision records; keep the storyboard visual and outcome-focused.
+
+## License headers
+
+Project-owned software and documentation use the MIT License in the root `LICENSE` file.
+
+- Begin every new C, C++, CMake, and similar commentable source or build file with `SPDX-FileCopyrightText: 2026 Open Engineering Platform contributors` and `SPDX-License-Identifier: MIT`, using that language's comment syntax.
+- Put SPDX lines immediately after the interpreter line in executable scripts.
+- Markdown and JSON files are covered by the root license and do not require inline license comments.
+- Preserve third-party copyright and license notices. Do not replace them with the project header.
