@@ -48,3 +48,25 @@ oep_apply_target_defaults(cad_to_grid_test)
 target_link_libraries(cad_to_grid_test PRIVATE oep::em_mesh)
 
 add_test(NAME unit.cad_to_grid COMMAND cad_to_grid_test)
+
+add_executable(simulation_cost_test simulation_cost_test.cpp)
+oep_apply_target_defaults(simulation_cost_test)
+target_link_libraries(simulation_cost_test PRIVATE oep::simulation_cost)
+
+add_test(NAME unit.simulation_cost COMMAND simulation_cost_test)
+
+add_executable(simulation_worker_lifecycle_test simulation_worker_lifecycle_test.cpp)
+oep_apply_target_defaults(simulation_worker_lifecycle_test)
+target_link_libraries(
+    simulation_worker_lifecycle_test
+    PRIVATE
+        oep::simulation_orchestrator
+)
+
+add_test(NAME unit.simulation_worker_lifecycle COMMAND simulation_worker_lifecycle_test)
+
+add_executable(ipc_frame_test ipc_frame_test.cpp)
+oep_apply_target_defaults(ipc_frame_test)
+target_link_libraries(ipc_frame_test PRIVATE oep::ipc)
+
+add_test(NAME unit.ipc_frame COMMAND ipc_frame_test)

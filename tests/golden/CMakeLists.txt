@@ -161,6 +161,19 @@ target_link_libraries(
 oep_apply_target_defaults(port_contract_harness_test)
 add_test(NAME golden.port_contract_harness COMMAND port_contract_harness_test)
 
+add_executable(
+    simulation_cost_calibration_test
+    em/simulation_cost_calibration_test.cpp
+)
+target_link_libraries(
+    simulation_cost_calibration_test
+    PRIVATE
+        oep::fdtd_engine
+        oep::simulation_cost
+)
+oep_apply_target_defaults(simulation_cost_calibration_test)
+add_test(NAME golden.simulation_cost_calibration COMMAND simulation_cost_calibration_test)
+
 if(TARGET oep_occt_geometry_kernel)
     add_executable(
         occt_kernel_adapter_contract_test

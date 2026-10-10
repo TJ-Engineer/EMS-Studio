@@ -38,6 +38,12 @@ The [FP64 Yee acceptance test](reference_fdtd_maxwell_test.cpp) drives the compi
 
 These values are deterministic properties of the declared grids and build, not replacement tolerances. The limits earlier in this document remain the acceptance authority.
 
+## Reference cost calibration
+
+The [cost calibration acceptance test](simulation_cost_calibration_test.cpp) measures two single-threaded three-dimensional reference-FDTD workloads on the executing host, constructs a named hardware/build calibration, and predicts a third holdout workload. The holdout must remain within an explicit `0.35×` to `2.85×` predicted/actual regression band. This intentionally broad cross-host limit detects order-of-magnitude model failures without treating shared CI timing as a stable benchmark.
+
+The same holdout proves that the deterministic forecast matches the reference grid's allocated staggered FP64 field bytes and serialized version-1 checkpoint bytes exactly. Unit evidence separately fixes hard-budget behavior and the cell, memory, step-count, and runtime pressure created when a small feature halves uniform grid spacing.
+
 ## Port normalization contract
 
 The independent [port contract API](include/oep/test/port_contract_harness.hpp) freezes `oep-rms-power-wave-1.0`. It uses RMS phasors with `Re{sqrt(2) x exp(+j omega t)}`, voltage in the declared modal direction, and current directed into the computational domain. For finite positive-real impedance `Z0`,

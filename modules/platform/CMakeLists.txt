@@ -3,7 +3,14 @@
 
 oep_add_boundary_library(app_shell app_shell)
 oep_add_boundary_library(interaction interaction)
-oep_add_boundary_library(ipc ipc)
+add_library(oep_ipc STATIC ipc/src/frame.cpp)
+add_library(oep::ipc ALIAS oep_ipc)
+target_include_directories(
+    oep_ipc
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/ipc/include>
+)
+oep_apply_target_defaults(oep_ipc)
 oep_add_boundary_library(automation automation)
 oep_add_boundary_library(sync sync)
 

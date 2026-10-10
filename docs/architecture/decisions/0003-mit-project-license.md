@@ -27,4 +27,4 @@ Third-party software, generated vendor material, and imported datasets retain th
 - Distributed modifications are not required by the project license to publish their source.
 - Dependency compatibility and notice obligations remain separate release requirements.
 - New project source and build scripts must carry the repository's SPDX header.
-- Contribution policy and the dependency/license register remain open product-lane work.
+- The dependency/license register is maintained under `docs/product/`; contribution governance remains open release work.

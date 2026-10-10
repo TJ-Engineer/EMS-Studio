@@ -3,3 +3,4 @@
 
 add_subdirectory(cad_studio)
 add_subdirectory(em_studio)
+add_subdirectory(ui_wireframe)

@@ -40,23 +40,43 @@ target_include_directories(
 target_link_libraries(oep_fdtd_engine PUBLIC oep::em_solver_api oep::em_mesh)
 oep_apply_target_defaults(oep_fdtd_engine)
 oep_add_boundary_library(fem_engine fem_engine)
-oep_add_boundary_library(simulation_cost simulation_cost)
+add_library(oep_simulation_cost STATIC simulation_cost/src/simulation_cost.cpp)
+add_library(oep::simulation_cost ALIAS oep_simulation_cost)
+target_include_directories(
+    oep_simulation_cost
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/simulation_cost/include>
+)
+target_link_libraries(oep_simulation_cost PUBLIC oep::simulation_ir oep::em_mesh)
+oep_apply_target_defaults(oep_simulation_cost)
 oep_add_boundary_library(simulation_cache simulation_cache)
 oep_add_boundary_library(em_optimizer em_optimizer)
 oep_add_boundary_library(basis_library basis_library)
-oep_add_boundary_library(simulation_orchestrator simulation_orchestrator)
+add_library(
+    oep_simulation_orchestrator
+    STATIC
+        simulation_orchestrator/src/reference_worker.cpp
+        simulation_orchestrator/src/worker_protocol.cpp
+)
+add_library(oep::simulation_orchestrator ALIAS oep_simulation_orchestrator)
+target_include_directories(
+    oep_simulation_orchestrator
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/simulation_orchestrator/include>
+)
+target_link_libraries(
+    oep_simulation_orchestrator
+    PUBLIC
+        oep::em_solver_api
+        oep::ipc
+    PRIVATE
+        oep::fdtd_engine
+)
+oep_apply_target_defaults(oep_simulation_orchestrator)
 oep_add_boundary_library(simulation_results simulation_results)
 
 target_link_libraries(oep_fem_engine INTERFACE oep::em_solver_api oep::em_mesh)
-target_link_libraries(oep_simulation_cost INTERFACE oep::simulation_ir oep::em_mesh)
 target_link_libraries(oep_simulation_cache INTERFACE oep::simulation_ir oep::em_solver_api)
 target_link_libraries(oep_em_optimizer INTERFACE oep::simulation_ir oep::simulation_results)
 target_link_libraries(oep_basis_library INTERFACE oep::simulation_ir oep::simulation_results)
-target_link_libraries(
-    oep_simulation_orchestrator
-    INTERFACE
-        oep::em_solver_api
-        oep::simulation_cost
-        oep::simulation_cache
-)
 target_link_libraries(oep_simulation_results INTERFACE oep::simulation_ir)

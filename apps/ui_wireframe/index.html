@@ -1,0 +1,298 @@
+<!--
+SPDX-FileCopyrightText: 2026 Open Engineering Platform contributors
+SPDX-License-Identifier: MIT
+-->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Interactive CAD Studio and EM Studio workflow wireframe for the Open Engineering Platform.">
+  <title>Open Engineering Platform — UI Wireframe</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-mode="cad">
+  <svg class="icon-library" aria-hidden="true">
+    <symbol id="i-cube" viewBox="0 0 24 24"><path d="m12 2 8.4 4.8v9.6L12 21.2l-8.4-4.8V6.8L12 2Z"/><path d="m3.8 6.9 8.2 4.8 8.2-4.8M12 21v-9.3"/></symbol>
+    <symbol id="i-wave" viewBox="0 0 24 24"><path d="M2 12h3c1.7 0 1.8-7 3.5-7S10.3 19 12 19s1.8-14 3.5-14 1.8 7 3.5 7h3"/></symbol>
+    <symbol id="i-tree" viewBox="0 0 24 24"><path d="M6 4v12m0-8h6m-6 6h6m0-6v4m0 2v4m0-10h6v4h-6V8Zm0 6h6v4h-6v-4ZM2 2h8v4H2V2Z"/></symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24"><path d="M4 4h16v16H4zM4 10h16M4 16h16M10 4v16M16 4v16"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="2.5"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7V5Z"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
+    <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></symbol>
+    <symbol id="i-crosshair" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/><path d="M12 2v5m0 10v5M2 12h5m10 0h5"/></symbol>
+    <symbol id="i-panel" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="1"/><path d="M9 4v16"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6m0-10v.1"/></symbol>
+  </svg>
+
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand-group">
+        <div class="brand-mark" aria-label="Open Engineering Platform">OE<span>P</span></div>
+        <div class="project-identity">
+          <div class="crumbs"><span>Projects</span><span>/</span><strong>2.45 GHz Patch Antenna</strong></div>
+          <div class="revision-line"><span class="saved-dot"></span> Evaluated · rev 18 <span class="branch">main</span></div>
+        </div>
+      </div>
+
+      <nav class="studio-switcher" aria-label="Studio">
+        <button class="studio-tab active" type="button" data-mode-target="cad" aria-pressed="true">
+          <svg><use href="#i-cube"></use></svg><span>CAD Studio</span>
+        </button>
+        <button class="studio-tab" type="button" data-mode-target="em" aria-pressed="false">
+          <svg><use href="#i-wave"></use></svg><span>EM Studio</span>
+        </button>
+      </nav>
+
+      <div class="top-actions">
+        <button class="command-trigger" type="button" data-command-open>
+          <svg><use href="#i-search"></use></svg><span>Commands</span><kbd>Ctrl K</kbd>
+        </button>
+        <div class="health-chip"><span></span> Engine ready</div>
+        <button class="avatar" type="button" aria-label="User menu">GE</button>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <nav class="activity-rail" aria-label="Primary tools">
+        <div class="rail-tools">
+          <button class="rail-button active" type="button" aria-label="Project browser" aria-pressed="true"><svg><use href="#i-tree"></use></svg></button>
+          <button class="rail-button" type="button" aria-label="Viewport"><svg><use href="#i-cube"></use></svg></button>
+          <button class="rail-button" type="button" aria-label="Studies"><svg><use href="#i-wave"></use></svg></button>
+          <button class="rail-button" type="button" aria-label="Diagnostics"><svg><use href="#i-info"></use></svg><span class="rail-badge">2</span></button>
+        </div>
+        <div class="axis-mark" aria-label="Coordinate axes"><i class="axis-z">Z</i><i class="axis-y">Y</i><i class="axis-x">X</i></div>
+      </nav>
+
+      <aside class="browser-panel panel" aria-label="Project browser">
+        <div class="panel-header">
+          <div><span class="eyebrow mode-copy" data-cad="Model browser" data-em="Study browser">Model browser</span><h2 class="mode-copy" data-cad="Feed enclosure" data-em="Patch antenna">Feed enclosure</h2></div>
+          <button class="icon-button" type="button" aria-label="Browser menu"><svg><use href="#i-more"></use></svg></button>
+        </div>
+
+        <div class="browser-search"><svg><use href="#i-search"></use></svg><input id="browser-filter" type="search" placeholder="Filter model" aria-label="Filter browser"></div>
+
+        <div class="tree-view mode-panel active" data-mode-panel="cad" role="tree" aria-label="CAD model tree">
+          <button class="tree-row expanded" type="button" data-select="cad.document" role="treeitem" aria-expanded="true"><svg class="chevron"><use href="#i-chevron"></use></svg><span class="tree-icon document-icon">F</span><span>Feed Enclosure</span><span class="row-status good">●</span></button>
+          <div class="tree-children" role="group">
+            <button class="tree-row" type="button" data-select="cad.parameters" role="treeitem"><span class="tree-spacer"></span><span class="tree-icon fx-icon">ƒ</span><span>Parameters</span><span class="count">6</span></button>
+            <button class="tree-row" type="button" data-select="cad.origin" role="treeitem"><span class="tree-spacer"></span><span class="tree-icon axis-icon">⊹</span><span>Origin</span></button>
+            <button class="tree-row expanded" type="button" data-select="cad.body" role="treeitem" aria-expanded="true"><svg class="chevron"><use href="#i-chevron"></use></svg><span class="tree-icon body-icon">◆</span><span>Housing</span><span class="eye">◉</span></button>
+            <div class="tree-children nested" role="group">
+              <button class="tree-row" type="button" data-select="cad.sketch" role="treeitem"><span class="tree-spacer"></span><span class="tree-icon sketch-icon">⌗</span><span>Base Sketch</span><span class="constraint-dot"></span></button>
+              <button class="tree-row" type="button" data-select="cad.extrude" role="treeitem"><span class="tree-spacer"></span><span class="tree-icon feature-icon">▰</span><span>Base Extrude</span><span class="row-status good">✓</span></button>
+              <button class="tree-row selected" type="button" data-select="cad.fillet" role="treeitem" aria-selected="true"><span class="tree-spacer"></span><span class="tree-icon feature-icon">⌒</span><span>Edge Fillet</span><span class="row-status good">✓</span></button>
+              <button class="tree-row" type="button" data-select="cad.face_sketch" role="treeitem"><span class="tree-spacer"></span><span class="tree-icon sketch-icon">⌗</span><span>Port Sketch</span><span class="constraint-dot"></span></button>
+              <button class="tree-row" type="button" data-select="cad.cut" role="treeitem"><span class="tree-spacer"></span><span class="tree-icon feature-icon">◫</span><span>Port Cut</span><span class="row-status good">✓</span></button>
+            </div>
+            <button class="tree-row" type="button" data-select="cad.material" role="treeitem"><span class="tree-spacer"></span><span class="tree-icon material-icon">◩</span><span>Aluminum 6061</span></button>
+          </div>
+        </div>
+
+        <div class="tree-view mode-panel" data-mode-panel="em" role="tree" aria-label="EM study tree">
+          <button class="tree-row expanded" type="button" data-select="em.study" role="treeitem" aria-expanded="true"><svg class="chevron"><use href="#i-chevron"></use></svg><span class="tree-icon study-icon">λ</span><span>2.45 GHz Study</span><span class="row-status good">●</span></button>
+          <div class="tree-children" role="group">
+            <button class="tree-row" type="button" data-select="em.geometry" role="treeitem"><span class="tree-spacer"></span><span class="tree-icon body-icon">◆</span><span>Geometry</span><span class="count">3</span></button>
+            <button class="tree-row expanded" type="button" data-select="em.materials" role="treeitem" aria-expanded="true"><svg class="chevron"><use href="#i-chevron"></use></svg><span class="tree-icon material-icon">◩</span><span>Materials</span><span class="count">3</span></button>
+            <div class="tree-children nested compact" role="group">
+              <button class="tree-row" type="button" data-select="em.copper" role="treeitem"><span class="tree-spacer"></span><span class="swatch copper"></span><span>Copper</span></button>
+              <button class="tree-row" type="button" data-select="em.fr4" role="treeitem"><span class="tree-spacer"></span><span class="swatch fr4"></span><span>FR-4</span></button>
+            </div>
+            <button class="tree-row selected" type="button" data-select="em.port" role="treeitem" aria-selected="true"><span class="tree-spacer"></span><span class="tree-icon port-icon">P1</span><span>Feed Port</span><span class="row-status good">✓</span></button>
+            <button class="tree-row" type="button" data-select="em.boundaries" role="treeitem"><span class="tree-spacer"></span><span class="tree-icon boundary-icon">▧</span><span>Open Boundaries</span><span class="row-status good">✓</span></button>
+            <button class="tree-row" type="button" data-select="em.grid" role="treeitem"><span class="tree-spacer"></span><span class="tree-icon grid-icon">▦</span><span>Cartesian Grid</span><span class="warning-dot"></span></button>
+            <button class="tree-row" type="button" data-select="em.monitors" role="treeitem"><span class="tree-spacer"></span><span class="tree-icon monitor-icon">⌁</span><span>Monitors</span><span class="count">4</span></button>
+            <button class="tree-row" type="button" data-select="em.solver" role="treeitem"><span class="tree-spacer"></span><span class="tree-icon solver-icon">▶</span><span>Reference FDTD</span></button>
+          </div>
+          <div class="validation-card">
+            <div class="validation-top"><svg><use href="#i-check"></use></svg><strong>ASIR validated</strong></div>
+            <p>Geometry authority matches evaluated revision 18.</p>
+            <span>asir · 9a47…e20c</span>
+          </div>
+        </div>
+      </aside>
+
+      <section class="viewport-panel" aria-label="Engineering viewport">
+        <div class="viewport-toolbar">
+          <div class="tool-group mode-panel active" data-mode-panel="cad">
+            <button type="button" class="tool-button active">Solid</button>
+            <button type="button" class="tool-button">Sketch</button>
+            <button type="button" class="tool-button">Inspect</button>
+            <span class="tool-divider"></span>
+            <button type="button" class="tool-button">Create</button>
+            <button type="button" class="tool-button">Modify</button>
+          </div>
+          <div class="tool-group mode-panel" data-mode-panel="em">
+            <button type="button" class="tool-button active">Setup</button>
+            <button type="button" class="tool-button">Mesh</button>
+            <button type="button" class="tool-button">Solve</button>
+            <button type="button" class="tool-button">Results</button>
+          </div>
+          <div class="viewport-actions">
+            <button class="icon-button toggle-button active" type="button" data-toggle-grid aria-pressed="true" aria-label="Toggle grid"><svg><use href="#i-grid"></use></svg></button>
+            <button class="icon-button toggle-button active" type="button" data-toggle-overlay aria-pressed="true" aria-label="Toggle engineering overlay"><svg><use href="#i-eye"></use></svg></button>
+            <button class="icon-button" type="button" data-fit aria-label="Fit view"><svg><use href="#i-crosshair"></use></svg></button>
+          </div>
+        </div>
+
+        <div class="viewport-canvas grid-visible overlay-visible" tabindex="0" aria-label="Interactive model viewport">
+          <div class="view-label"><span class="mode-copy" data-cad="DESIGN" data-em="SETUP">DESIGN</span><b>·</b><span>ORTHOGRAPHIC</span></div>
+          <svg class="scene scene-cad active" viewBox="0 0 900 590" role="img" aria-label="Isometric mechanical feed enclosure">
+            <defs>
+              <linearGradient id="cadTop" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#b8c7d2"/><stop offset="1" stop-color="#758895"/></linearGradient>
+              <linearGradient id="cadSide" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#607582"/><stop offset="1" stop-color="#374b56"/></linearGradient>
+              <filter id="shadow"><feDropShadow dx="0" dy="18" stdDeviation="15" flood-color="#000" flood-opacity=".4"/></filter>
+              <pattern id="cadGrid" width="32" height="32" patternUnits="userSpaceOnUse" patternTransform="skewX(-28) scale(1 .58)"><path d="M32 0H0V32" fill="none" stroke="#456070" stroke-opacity=".34" stroke-width="1"/></pattern>
+            </defs>
+            <g class="scene-grid">
+              <path d="M95 410 438 210l379 219-343 198z" fill="url(#cadGrid)" opacity=".72"/>
+              <path d="M95 410 438 210l379 219-343 198z" fill="#20313a" opacity=".12"/>
+            </g>
+            <ellipse cx="472" cy="442" rx="252" ry="101" fill="#02080b" opacity=".35"/>
+            <g filter="url(#shadow)" class="cad-part">
+              <path d="M228 319 468 181l229 132-240 139z" fill="url(#cadTop)" stroke="#d7e2e8" stroke-width="2"/>
+              <path d="m228 319 229 133v91L228 410Z" fill="url(#cadSide)" stroke="#8195a0" stroke-width="2"/>
+              <path d="m457 452 240-139v91L457 543Z" fill="#4f6470" stroke="#8296a1" stroke-width="2"/>
+              <path d="m294 322 176-102 161 93-176 102Z" fill="#172a34" stroke="#d0dce2" stroke-width="3"/>
+              <path d="m319 322 151-87 136 78-151 87Z" fill="#36515f" stroke="#667f8c"/>
+              <ellipse cx="307" cy="348" rx="27" ry="15" fill="#213640" stroke="#d1dbe0" stroke-width="3" transform="rotate(30 307 348)"/>
+              <ellipse cx="609" cy="350" rx="27" ry="15" fill="#213640" stroke="#d1dbe0" stroke-width="3" transform="rotate(-30 609 350)"/>
+              <path class="selected-geometry" d="M228 319 468 181l229 132m0 0-240 139-229-133m229 133v91" fill="none" stroke="#42d6ff" stroke-width="7" stroke-linecap="round" opacity=".95"/>
+              <g class="topology-points engineering-overlay">
+                <circle cx="228" cy="319" r="7"/><circle cx="468" cy="181" r="7"/><circle cx="697" cy="313" r="7"/><circle cx="457" cy="452" r="7"/>
+              </g>
+            </g>
+            <g class="dimension engineering-overlay">
+              <path d="M222 425 443 553M208 420l23 5m198 123 28 9"/>
+              <rect x="292" y="471" width="90" height="27" rx="5"/><text x="337" y="490">84.00 mm</text>
+            </g>
+            <g class="origin-gizmo" transform="translate(115 498)"><circle r="6"/><path class="x" d="M0 0h45"/><path class="y" d="M0 0-27-17"/><path class="z" d="M0 0v-46"/><text class="x" x="51" y="5">X</text><text class="y" x="-41" y="-18">Y</text><text class="z" x="-4" y="-53">Z</text></g>
+          </svg>
+
+          <svg class="scene scene-em" viewBox="0 0 900 590" role="img" aria-label="Patch antenna with Cartesian mesh and port overlay">
+            <defs>
+              <linearGradient id="substrate" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#488c6b"/><stop offset="1" stop-color="#1c4f3a"/></linearGradient>
+              <linearGradient id="copper" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e6a55c"/><stop offset="1" stop-color="#9c5425"/></linearGradient>
+              <pattern id="meshGrid" width="18" height="18" patternUnits="userSpaceOnUse" patternTransform="skewX(-27) scale(1 .58)"><path d="M18 0H0V18" fill="none" stroke="#5ed7ff" stroke-opacity=".52" stroke-width="1"/></pattern>
+              <radialGradient id="fieldGlow"><stop offset="0" stop-color="#ffcc66" stop-opacity=".65"/><stop offset=".5" stop-color="#fd6c64" stop-opacity=".2"/><stop offset="1" stop-color="#7c55ff" stop-opacity="0"/></radialGradient>
+              <marker id="arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 8 4 0 8Z" fill="#51ddff" stroke="none"/></marker>
+              <filter id="emShadow"><feDropShadow dx="0" dy="16" stdDeviation="12" flood-color="#000" flood-opacity=".45"/></filter>
+            </defs>
+            <g class="field-overlay engineering-overlay">
+              <ellipse cx="486" cy="278" rx="300" ry="210" fill="url(#fieldGlow)"/>
+              <path d="M337 280c40-86 197-86 237 0M295 280c56-136 265-136 321 0M252 280c76-189 356-189 432 0" fill="none" stroke="#ff9b61" stroke-width="2" opacity=".55" stroke-dasharray="7 9"/>
+            </g>
+            <ellipse cx="469" cy="438" rx="287" ry="110" fill="#03090c" opacity=".42"/>
+            <g filter="url(#emShadow)">
+              <path d="m181 337 343-199 264 153-343 198Z" fill="url(#substrate)" stroke="#6cc79b" stroke-width="2"/>
+              <path d="m181 337 264 152v30L181 367Z" fill="#173d2c" stroke="#4b8b69"/>
+              <path d="m445 489 343-198v30L445 519Z" fill="#123526" stroke="#4b8b69"/>
+              <path d="m290 327 230-134 160 93-230 133Z" fill="url(#copper)" stroke="#ffd199" stroke-width="2"/>
+              <path d="m446 418 44-25 45 26-44 25Z" fill="#ecb273" stroke="#ffe0b6"/>
+              <path d="m468 411 1 77" stroke="#efb46d" stroke-width="12"/>
+              <g class="scene-grid">
+                <path d="m161 338 363-211 285 165-363 210Z" fill="url(#meshGrid)" stroke="#68dbff" stroke-width="1" opacity=".9"/>
+                <path d="m161 338 285 164v39L161 377Zm285 164 363-210v39L446 541Z" fill="none" stroke="#68dbff" stroke-opacity=".5"/>
+              </g>
+              <g class="port-plane engineering-overlay">
+                <path d="m440 398 57-33 58 34-58 33Z" fill="#43d9ff" fill-opacity=".26" stroke="#51ddff" stroke-width="3"/>
+                <path d="m497 398 0-72" stroke="#51ddff" stroke-width="3" marker-end="url(#arrow)"/>
+                <rect x="515" y="344" width="87" height="31" rx="6"/><text x="558" y="365">PORT 1</text>
+              </g>
+            </g>
+            <g class="mesh-stats engineering-overlay" transform="translate(48 64)"><rect width="168" height="66" rx="8"/><text x="15" y="25">GRID PREVIEW</text><text class="stat" x="15" y="50">96 × 72 × 28 cells</text></g>
+            <g class="origin-gizmo" transform="translate(115 498)"><circle r="6"/><path class="x" d="M0 0h45"/><path class="y" d="M0 0-27-17"/><path class="z" d="M0 0v-46"/><text class="x" x="51" y="5">X</text><text class="y" x="-41" y="-18">Y</text><text class="z" x="-4" y="-53">Z</text></g>
+          </svg>
+
+          <div class="view-cube" aria-label="View orientation">
+            <button type="button" data-view="top">TOP</button><span class="cube-left">L</span><span class="cube-right">R</span>
+          </div>
+          <div class="viewport-status">
+            <span><i class="status-green"></i><span class="mode-copy" data-cad="Topology stable" data-em="Roles resolved">Topology stable</span></span>
+            <span class="mode-copy" data-cad="1 body · 24 faces" data-em="193,536 cells · 1 port">1 body · 24 faces</span>
+            <span>mm</span>
+          </div>
+        </div>
+      </section>
+
+      <aside class="inspector-panel panel" aria-label="Properties inspector">
+        <div class="panel-header inspector-heading">
+          <div><span class="eyebrow">Inspector</span><h2 id="inspector-title">Edge Fillet</h2></div>
+          <span class="type-pill" id="inspector-type">FEATURE</span>
+        </div>
+        <div class="selection-banner"><span id="selection-icon">⌒</span><div><strong id="selection-name">Edge Fillet</strong><small id="selection-id">feature · fillet-01</small></div><span class="selection-state">Evaluated</span></div>
+        <div id="inspector-content" class="inspector-content"></div>
+        <div class="inspector-footer">
+          <button type="button" class="secondary-button">Reset</button>
+          <button type="button" class="primary-button" id="apply-button">Apply changes</button>
+        </div>
+      </aside>
+
+      <section class="bottom-dock" aria-label="History and output">
+        <div class="dock-tabs" role="tablist">
+          <button type="button" class="dock-tab active mode-copy" role="tab" aria-selected="true" data-dock="primary" data-cad="History" data-em="Preflight">History</button>
+          <button type="button" class="dock-tab mode-copy" role="tab" aria-selected="false" data-dock="diagnostics" data-cad="Diagnostics  2" data-em="Messages  1">Diagnostics  2</button>
+          <button type="button" class="dock-tab" role="tab" aria-selected="false" data-dock="console">Console</button>
+          <span class="dock-spacer"></span>
+          <div class="run-summary mode-panel" data-mode-panel="em"><span><small>EST. MEMORY</small><strong>42.6 MB</strong></span><span><small>EST. RUNTIME</small><strong>00:18</strong></span><button type="button" class="run-button" id="run-button"><svg><use href="#i-play"></use></svg><span>Run reference solve</span></button></div>
+          <button type="button" class="dock-collapse" aria-label="Collapse output">⌄</button>
+        </div>
+        <div class="dock-content">
+          <div class="dock-view active" data-dock-view="primary">
+            <div class="mode-panel active history-strip" data-mode-panel="cad">
+              <button type="button" class="history-node complete"><span class="history-icon">⌗</span><b>Base Sketch</b><small>Fully constrained</small></button>
+              <span class="history-link"></span>
+              <button type="button" class="history-node complete"><span class="history-icon">▰</span><b>Base Extrude</b><small>24 mm</small></button>
+              <span class="history-link"></span>
+              <button type="button" class="history-node current"><span class="history-icon">⌒</span><b>Edge Fillet</b><small>4 mm</small></button>
+              <span class="history-link"></span>
+              <button type="button" class="history-node complete"><span class="history-icon">⌗</span><b>Port Sketch</b><small>Face attached</small></button>
+              <span class="history-link"></span>
+              <button type="button" class="history-node complete"><span class="history-icon">◫</span><b>Port Cut</b><small>Through all</small></button>
+              <span class="history-end">+</span>
+            </div>
+            <div class="mode-panel preflight-list" data-mode-panel="em">
+              <div class="preflight-item"><span class="check-ring">✓</span><div><strong>Geometry authority</strong><small>Evaluated revision 18 · identities resolved</small></div><b>PASS</b></div>
+              <div class="preflight-item"><span class="check-ring">✓</span><div><strong>Materials &amp; roles</strong><small>3 regions · port and boundary assignments valid</small></div><b>PASS</b></div>
+              <div class="preflight-item warning"><span class="warning-ring">!</span><div><strong>Grid resolution</strong><small>Feed gap resolves to 1.5 cells at its narrowest point</small></div><b>REVIEW</b></div>
+              <div class="preflight-item"><span class="check-ring">✓</span><div><strong>Resource budget</strong><small>193,536 cells · within local preview budget</small></div><b>PASS</b></div>
+            </div>
+          </div>
+          <div class="dock-view diagnostics-view" data-dock-view="diagnostics">
+            <div class="mode-panel active" data-mode-panel="cad">
+              <div class="diagnostic-row warning"><span>W</span><div><strong>Small-radius edge approaches model tolerance</strong><small>Edge Fillet · radius 4.00 mm · informational in current evaluation</small></div><button type="button">Select</button></div>
+              <div class="diagnostic-row"><span>i</span><div><strong>Checkpoint is available</strong><small>Last durable document state written at revision 18</small></div><button type="button">Details</button></div>
+            </div>
+            <div class="mode-panel" data-mode-panel="em">
+              <div class="diagnostic-row warning"><span>W</span><div><strong>Feed gap has low preview resolution</strong><small>Cartesian Grid · narrowest feature spans 1.5 cells</small></div><button type="button">Select grid</button></div>
+              <div class="diagnostic-row"><span>i</span><div><strong>Reference CPU scope</strong><small>Preview uses FP64 Yee updates and first-order Mur boundaries</small></div><button type="button">Details</button></div>
+            </div>
+          </div>
+          <div class="dock-view console-view" data-dock-view="console"><code><span>14:32:08</span> evaluator  revision 18 matches semantic head<br><span>14:32:08</span> topology   24 persistent faces reconciled, 0 ambiguous<br><span>14:32:09</span> asir       validation complete · 9a47…e20c</code></div>
+        </div>
+      </section>
+    </main>
+    <footer class="statusbar"><span><i></i> Ready</span><span id="status-message">Edge Fillet selected</span><span class="status-spacer"></span><span>Local workspace</span><span>UTF-8</span><span>OEP 0.1 wireframe</span></footer>
+  </div>
+
+  <dialog class="command-palette" id="command-palette">
+    <form method="dialog">
+      <div class="command-input"><svg><use href="#i-search"></use></svg><input id="command-search" autocomplete="off" placeholder="Type a command or search the project…" aria-label="Command search"><kbd>Esc</kbd></div>
+      <div class="command-section"><span>QUICK ACTIONS</span>
+        <button type="button" data-command="mode-em"><svg><use href="#i-wave"></use></svg><div><strong>Open EM Studio</strong><small>Continue this model as a validated antenna study</small></div><kbd>⇧ E</kbd></button>
+        <button type="button" data-command="mode-cad"><svg><use href="#i-cube"></use></svg><div><strong>Open CAD Studio</strong><small>Return to authoritative parametric geometry</small></div><kbd>⇧ C</kbd></button>
+        <button type="button" data-command="toggle-grid"><svg><use href="#i-grid"></use></svg><div><strong>Toggle viewport grid</strong><small>Show or hide the current spatial grid</small></div><kbd>G</kbd></button>
+        <button type="button" data-command="preflight"><svg><use href="#i-check"></use></svg><div><strong>Run study preflight</strong><small>Validate geometry, roles, grid, and resource budget</small></div></button>
+      </div>
+      <p class="command-empty" hidden>No commands match your search.</p>
+    </form>
+  </dialog>
+
+  <div class="toast" role="status" aria-live="polite"><span class="toast-icon">✓</span><div><strong id="toast-title">Ready</strong><small id="toast-message">Workspace loaded</small></div></div>
+  <script src="app.js"></script>
+</body>
+</html>

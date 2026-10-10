@@ -10,6 +10,7 @@ target_link_libraries(
         oep::fdtd_engine
         oep::ipc
         oep::simulation_cache
+        oep::simulation_orchestrator
         oep::simulation_results
 )
 set_target_properties(oep_simulation_worker PROPERTIES OUTPUT_NAME simulation-worker)
