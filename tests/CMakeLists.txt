@@ -13,3 +13,6 @@ endif()
 if(TARGET oep_simulation_worker)
     add_test(NAME smoke.simulation_worker COMMAND oep_simulation_worker)
 endif()
+
+add_subdirectory(unit)
+add_subdirectory(golden)

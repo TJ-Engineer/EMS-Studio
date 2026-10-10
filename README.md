@@ -2,6 +2,10 @@
 
 This repository is the clean-sheet implementation workspace for the coordinated CAD Studio and EM Studio applications described in the architecture plan.
 
+## Development progress
+
+The [development storyboard](docs/DEVELOPMENT_STORYBOARD.md) records the completed platform and first end-to-end CAD reels, the validated ASIR boundary and Maxwell harness, and the current reference FDTD frame on the path to the first EM milestone.
+
 ## Build
 
 The bootstrap build requires CMake 3.28+, Ninja, and a C++20 compiler.
@@ -11,6 +15,17 @@ cmake --preset dev
 cmake --build --preset dev
 ctest --preset dev
 ```
+
+To build the optional OCCT exact B-rep adapter on Ubuntu 24.04 without changing the system installation:
+
+```sh
+tools/bootstrap_occt_ubuntu_noble.sh
+cmake --preset occt-local
+cmake --build --preset occt-local
+ctest --preset occt-local
+```
+
+The bootstrap downloads the matching Ubuntu OCCT and TBB packages into the ignored `build/` tree and verifies the OCCT source archive before recovering a header omitted by the binary development package.
 
 Build products stay under `build/` and are not source-controlled.
 

@@ -8,3 +8,7 @@ Schema source files live by contract family:
 - `results/`: normalized scalar, network, field, convergence, and provenance records.
 
 Generated C++ and Python bindings belong in the CMake build tree. Schema compatibility tests belong under `tests/conformance/`.
+
+Current contracts:
+
+- [ASIR 0.1](simulation_ir/asir-0.1.md)

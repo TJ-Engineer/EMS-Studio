@@ -1,0 +1,35 @@
+add_executable(document_state_machine_test document_state_machine_test.cpp)
+oep_apply_target_defaults(document_state_machine_test)
+target_link_libraries(document_state_machine_test PRIVATE oep::document)
+
+add_test(NAME unit.document_state_machine COMMAND document_state_machine_test)
+
+add_executable(persistence_checkpoint_test persistence_checkpoint_test.cpp)
+oep_apply_target_defaults(persistence_checkpoint_test)
+target_link_libraries(persistence_checkpoint_test PRIVATE oep::persistence)
+
+add_test(NAME unit.persistence_checkpoint COMMAND persistence_checkpoint_test)
+
+add_executable(feature_dependency_graph_test feature_dependency_graph_test.cpp)
+oep_apply_target_defaults(feature_dependency_graph_test)
+target_link_libraries(feature_dependency_graph_test PRIVATE oep::persistence)
+
+add_test(NAME unit.feature_dependency_graph COMMAND feature_dependency_graph_test)
+
+add_executable(topology_identity_test topology_identity_test.cpp)
+oep_apply_target_defaults(topology_identity_test)
+target_link_libraries(topology_identity_test PRIVATE oep::topology_id)
+
+add_test(NAME unit.topology_identity COMMAND topology_identity_test)
+
+add_executable(sketch_solver_test sketch_solver_test.cpp)
+oep_apply_target_defaults(sketch_solver_test)
+target_link_libraries(sketch_solver_test PRIVATE oep::sketch)
+
+add_test(NAME unit.sketch_solver COMMAND sketch_solver_test)
+
+add_executable(simulation_ir_test simulation_ir_test.cpp)
+oep_apply_target_defaults(simulation_ir_test)
+target_link_libraries(simulation_ir_test PRIVATE oep::simulation_ir)
+
+add_test(NAME unit.simulation_ir COMMAND simulation_ir_test)

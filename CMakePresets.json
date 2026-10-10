@@ -33,6 +33,17 @@
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release"
       }
+    },
+    {
+      "name": "occt-local",
+      "displayName": "Developer build with local OCCT SDK",
+      "inherits": "base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "OEP_ENABLE_OCCT_ADAPTER": "ON",
+        "OEP_ENABLE_STRICT_WARNINGS": "ON",
+        "OEP_OCCT_ROOT": "${sourceDir}/build/occt-sdk/usr"
+      }
     }
   ],
   "buildPresets": [
@@ -43,12 +54,23 @@
     {
       "name": "release",
       "configurePreset": "release"
+    },
+    {
+      "name": "occt-local",
+      "configurePreset": "occt-local"
     }
   ],
   "testPresets": [
     {
       "name": "dev",
       "configurePreset": "dev",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "occt-local",
+      "configurePreset": "occt-local",
       "output": {
         "outputOnFailure": true
       }
