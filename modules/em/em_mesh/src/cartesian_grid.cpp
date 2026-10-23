@@ -1,6 +1,10 @@
 // SPDX-FileCopyrightText: 2026 Open Engineering Platform contributors
 // SPDX-License-Identifier: MIT
 
+// Maps prepared axis-aligned regions and patches onto a bounded Cartesian grid.
+// Retain persistent source IDs and subcell occupancy for diagnostics: selecting a
+// dominant material does not remove the geometric staircasing error.
+
 #include <oep/em_mesh/cartesian_grid.hpp>
 
 #include <algorithm>
@@ -104,6 +108,8 @@ constexpr auto fraction_tolerance = 1.0e-12;
             - std::max(first_minimum, second_minimum));
 }
 
+// Analytic box intersections retain subcell volume instead of reducing
+// geometry to a center-point test. Fractions drive conservation diagnostics.
 [[nodiscard]] double overlap_volume(
     const AxisAlignedBox& first,
     const AxisAlignedBox& second)

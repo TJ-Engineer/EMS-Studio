@@ -1,6 +1,10 @@
 // SPDX-FileCopyrightText: 2026 Open Engineering Platform contributors
 // SPDX-License-Identifier: MIT
 
+// Bridges document feature evaluation to sketch solving and exact-body operations.
+// Kernel artifacts and persistent topology bindings are evaluator-owned; reopening
+// a document requires explicit hydration before those artifacts can be reused.
+
 #pragma once
 
 #include <oep/document/document.hpp>

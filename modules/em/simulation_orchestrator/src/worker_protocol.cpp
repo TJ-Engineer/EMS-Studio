@@ -1,6 +1,10 @@
 // SPDX-FileCopyrightText: 2026 Open Engineering Platform contributors
 // SPDX-License-Identifier: MIT
 
+// Encodes solver-neutral commands and replies inside correlated IPC frames.
+// Payload decoding has its own text, collection, and blob bounds in addition
+// to outer frame limits; neither layer should trust lengths from the other.
+
 #include <oep/simulation_orchestrator/worker_protocol.hpp>
 
 #include <bit>
@@ -32,6 +36,8 @@ constexpr std::uint32_t maximum_diagnostics = 4'096;
     };
 }
 
+// Field order and integer widths form the wire contract. A compatible reader
+// must consume the same sequence; change the protocol version for breaking edits.
 class Writer {
 public:
     void u8(const std::uint8_t value)
@@ -738,6 +744,68 @@ WorkerReplyDecodeResult decode_worker_reply(const ipc::Frame& frame)
             .checkpoint = std::move(checkpoint),
             .artifacts = std::move(artifacts),
             .diagnostics = std::move(*diagnostics),
+        },
+        .diagnostics = {},
+    };
+}
+
+std::vector<std::byte> encode_worker_recovery(
+    const WorkerRecoveryRecord& recovery)
+{
+    return ipc::encode_frame(encode_worker_request(WorkerRequest{
+        .correlation_id = 0,
+        .command = ResumeCommand{
+            .job = recovery.job,
+            .checkpoint = recovery.checkpoint,
+        },
+    }));
+}
+
+WorkerRecoveryDecodeResult decode_worker_recovery(
+    const std::span<const std::byte> encoded)
+{
+    // The nested frame uses the worker protocol's existing 64 MiB blob limit.
+    // A zero correlation ID identifies stored recovery rather than a live RPC.
+    const auto frame = ipc::decode_frame(encoded, {
+        .maximum_payload_bytes = maximum_blob_bytes,
+        .maximum_frames = 1,
+    });
+    if (!frame.succeeded()) {
+        return {
+            .recovery = std::nullopt,
+            .diagnostics = {protocol_issue(
+                "worker_recovery.frame",
+                "durable worker frame checksum, version, bounds, or layout is invalid")},
+        };
+    }
+    if (frame.frame->correlation_id != 0) {
+        return {
+            .recovery = std::nullopt,
+            .diagnostics = {protocol_issue(
+                "worker_recovery.correlation_id",
+                "durable worker recovery must use correlation ID zero")},
+        };
+    }
+    auto decoded = decode_worker_request(*frame.frame);
+    if (!decoded.succeeded()) {
+        return {
+            .recovery = std::nullopt,
+            .diagnostics = std::move(decoded.diagnostics),
+        };
+    }
+    auto* const resume = std::get_if<ResumeCommand>(&decoded.request->command);
+    if (resume == nullptr) {
+        return {
+            .recovery = std::nullopt,
+            .diagnostics = {protocol_issue(
+                "worker_recovery.operation",
+                "durable worker recovery must contain a resume command")},
+        };
+    }
+    return {
+        .recovery = WorkerRecoveryRecord{
+            .job = std::move(resume->job),
+            .checkpoint = std::move(resume->checkpoint),
         },
         .diagnostics = {},
     };

@@ -1,6 +1,10 @@
 // SPDX-FileCopyrightText: 2026 Open Engineering Platform contributors
 // SPDX-License-Identifier: MIT
 
+// Prepares a traceable, SI-meter geometry representation for the Cartesian spike.
+// Only axis-aligned boxes and planar patches are supported here; this boundary
+// does not approximate arbitrary B-rep shapes or perform full ASIR validation.
+
 #pragma once
 
 #include <oep/simulation_ir/simulation_ir.hpp>
@@ -13,6 +17,8 @@
 
 namespace oep::em_geometry {
 
+// Coordinates are in SI meters, in the study frame; CAD model units must
+// be converted before crossing this boundary.
 struct Point3d {
     double x{};
     double y{};
@@ -34,6 +40,9 @@ enum class Axis {
     z,
 };
 
+// The tangential intervals follow the other coordinate axes in ascending
+// axis order (x normal: y/z; y normal: x/z; z normal: x/y). The sign is
+// exactly -1 or +1 and defines the inward normal used by port orientation.
 struct PlanarPatch {
     Axis normal_axis{Axis::z};
     int inward_normal_sign{1};
@@ -53,6 +62,8 @@ struct ResolvedCadEntity {
     GeometryPrimitive geometry;
 };
 
+// The caller resolves persistent identities from one exact CAD snapshot.
+// The hash binds these primitives to the geometry used by the study.
 struct CadGeometrySnapshot {
     std::string geometry_hash;
     std::vector<ResolvedCadEntity> entities;
@@ -131,6 +142,8 @@ struct ComputationalGeometry {
     std::vector<PortRegion> ports;
 };
 
+// Errors leave geometry absent; diagnostics can contain several independent
+// failures. Consumers must not use partially prepared regions.
 struct PreparationResult {
     std::optional<ComputationalGeometry> geometry;
     std::vector<Diagnostic> diagnostics;
@@ -150,6 +163,8 @@ public:
 
 [[nodiscard]] bool valid(const AxisAlignedBox& bounds) noexcept;
 [[nodiscard]] bool valid(const PlanarPatch& patch) noexcept;
+// Invalid or degenerate bounds return zero; validity must be checked when
+// zero volume would otherwise be interpreted as a meaningful physical value.
 [[nodiscard]] double volume_m3(const AxisAlignedBox& bounds) noexcept;
 
 } // namespace oep::em_geometry

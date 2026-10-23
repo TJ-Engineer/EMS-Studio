@@ -1,6 +1,10 @@
 // SPDX-FileCopyrightText: 2026 Open Engineering Platform contributors
 // SPDX-License-Identifier: MIT
 
+// Prepares a traceable, SI-meter geometry representation for the Cartesian spike.
+// Only axis-aligned boxes and planar patches are supported here; this boundary
+// does not approximate arbitrary B-rep shapes or perform full ASIR validation.
+
 #include <oep/em_geometry/computational_geometry.hpp>
 
 #include <algorithm>
@@ -163,6 +167,8 @@ PreparationResult GeometryPreparer::prepare(
             "the resolved CAD snapshot must match the validated ASIR geometry hash"));
     }
 
+    // Index borrowed entities only for this call. Persistent IDs resolve roles
+    // and ports; kernel enumeration order is not a stable identity.
     std::map<std::string, const ResolvedCadEntity*, std::less<>> entities;
     for (std::size_t index = 0; index < snapshot.entities.size(); ++index) {
         const auto& entity = snapshot.entities[index];
@@ -193,6 +199,8 @@ PreparationResult GeometryPreparer::prepare(
         }
     }
 
+    // Resolve roles into separate volume/surface records. One air/vacuum volume
+    // defines the grid domain; a face-only background cannot supply that domain.
     std::optional<BackgroundRegion> background;
     std::vector<MaterialRegion> material_regions;
     std::vector<SurfaceRegion> surface_regions;
@@ -279,6 +287,8 @@ PreparationResult GeometryPreparer::prepare(
             "the Cartesian grid requires one resolved air-or-vacuum background volume"));
     }
 
+    // Port orientation and reference-plane direction must agree with resolved
+    // patches. A parallel plane with the opposite sign changes the wave convention.
     std::vector<PortRegion> ports;
     for (const auto& port : study.ports) {
         const auto path = "ports[" + port.id + ']';
@@ -342,6 +352,8 @@ PreparationResult GeometryPreparer::prepare(
     const auto has_error = std::ranges::any_of(result.diagnostics, [](const Diagnostic& item) {
         return item.severity == DiagnosticSeverity::error;
     });
+    // Publish only a complete preparation result. Sort identity-bearing records
+    // so equivalent authoring order produces the same downstream traversal.
     if (!has_error && background.has_value()) {
         auto materials = study.materials;
         std::ranges::sort(materials, {}, &simulation_ir::MaterialDefinition::id);

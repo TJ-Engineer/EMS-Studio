@@ -1,6 +1,10 @@
 // SPDX-FileCopyrightText: 2026 Open Engineering Platform contributors
 // SPDX-License-Identifier: MIT
 
+// Deterministic sketch constraints use stable entity IDs and parameter bindings.
+// Solver classification distinguishes remaining freedom from contradictory
+// constraints; callers must inspect the result before constructing exact geometry.
+
 #pragma once
 
 #include <compare>

@@ -1,6 +1,10 @@
 // SPDX-FileCopyrightText: 2026 Open Engineering Platform contributors
 // SPDX-License-Identifier: MIT
 
+// Document authority separates semantic revisions from evaluated geometry.
+// A committed edit may fail regeneration; consumers must request current geometry
+// rather than treating the last successful snapshot as the current model.
+
 #include <oep/document/document.hpp>
 
 #include <algorithm>
@@ -80,6 +84,8 @@ void validate_semantic_state(const SemanticState& semantic_state)
         }
     }
 
+    // Lexical ordering breaks ties between ready features deterministically.
+    // Changing this order affects reproducibility even for independent DAG branches.
     std::set<std::string, std::less<>> ready;
     for (const auto& [feature_id, indegree] : indegrees) {
         if (indegree == 0) {
@@ -344,6 +350,8 @@ const EvaluationRecord& Document::current_evaluation() const
     return evaluation(semantic_head_revision_id());
 }
 
+// This is the stale-geometry gate: semantic edits can advance while evaluation
+// fails. The previous successful body must never escape as current geometry.
 GeometryAccess Document::current_geometry() const
 {
     const auto head = semantic_head_revision_id();
@@ -414,6 +422,9 @@ CommandResult Document::apply(const SetParameterCommand& command)
     });
 }
 
+// Validate the entire transaction before committing semantic state.
+// Regeneration failure is recorded on the new revision, not rolled back as
+// an invalid command; Undo can recover the earlier evaluated revision.
 CommandResult Document::apply(const CommandTransaction& transaction)
 {
     std::vector<Diagnostic> validation_diagnostics;

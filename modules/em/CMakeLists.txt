@@ -1,14 +1,18 @@
 # SPDX-FileCopyrightText: 2026 Open Engineering Platform contributors
 # SPDX-License-Identifier: MIT
 
-add_library(oep_simulation_ir STATIC simulation_ir/src/simulation_ir.cpp)
+add_library(oep_simulation_ir STATIC
+    simulation_ir/src/simulation_ir.cpp
+    simulation_ir/src/cad_study_draft.cpp
+    simulation_ir/src/project_checkpoint.cpp
+)
 add_library(oep::simulation_ir ALIAS oep_simulation_ir)
 target_include_directories(
     oep_simulation_ir
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/simulation_ir/include>
 )
-target_link_libraries(oep_simulation_ir PUBLIC oep::document)
+target_link_libraries(oep_simulation_ir PUBLIC oep::document oep::persistence oep::ipc)
 oep_apply_target_defaults(oep_simulation_ir)
 add_library(oep_em_geometry STATIC em_geometry/src/computational_geometry.cpp)
 add_library(oep::em_geometry ALIAS oep_em_geometry)

@@ -1,6 +1,10 @@
 // SPDX-FileCopyrightText: 2026 Open Engineering Platform contributors
 // SPDX-License-Identifier: MIT
 
+// ASIR is the solver-neutral study contract, including dimensioned SI values,
+// CAD authority, persistent references, and execution provenance. Structural
+// validation and canonical content identity are separate from solving a study.
+
 #pragma once
 
 #include <oep/document/document.hpp>
@@ -34,6 +38,8 @@ enum class SiDimension {
     power,
 };
 
+// The dimension tag is part of the contract; a numerically plausible value
+// with an unspecified or wrong dimension must not pass validation.
 struct SiValue {
     double value{};
     SiDimension dimension{SiDimension::unspecified};

@@ -1,6 +1,10 @@
 // SPDX-FileCopyrightText: 2026 Open Engineering Platform contributors
 // SPDX-License-Identifier: MIT
 
+// Bridges document feature evaluation to sketch solving and exact-body operations.
+// Kernel artifacts and persistent topology bindings are evaluator-owned; reopening
+// a document requires explicit hydration before those artifacts can be reused.
+
 #include <oep/modeler/cad_feature_evaluator.hpp>
 
 #include <algorithm>
@@ -796,6 +800,8 @@ std::optional<std::string> CadFeatureEvaluator::compose_geometry(
     return final_artifact->body_summary->content_hash;
 }
 
+// Recovery stores document evaluations, not live kernel handles. Rebuild
+// artifacts against this kernel and verify them before permitting continued edits.
 CadHydrationResult CadFeatureEvaluator::hydrate(const document::DocumentState& state)
 {
     artifacts_.clear();

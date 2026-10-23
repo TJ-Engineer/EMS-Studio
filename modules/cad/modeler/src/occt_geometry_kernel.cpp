@@ -1,6 +1,10 @@
 // SPDX-FileCopyrightText: 2026 Open Engineering Platform contributors
 // SPDX-License-Identifier: MIT
 
+// OCCT implementation of the kernel-neutral contract. Keep OCCT types inside
+// this adapter so document and EM code depend on stable project types. Exact-body
+// handles are local to this kernel instance; snapshots provide the restart path.
+
 #include <oep/modeler/occt_geometry_kernel.hpp>
 
 #include <BRepAdaptor_Surface.hxx>
@@ -14,6 +18,7 @@
 #include <BRepCheck_Analyzer.hxx>
 #include <BRepFilletAPI_MakeFillet.hxx>
 #include <BRepGProp.hxx>
+#include <BRepMesh_IncrementalMesh.hxx>
 #include <BRepPrimAPI_MakePrism.hxx>
 #include <BRepTools.hxx>
 #include <BRep_Tool.hxx>
@@ -36,6 +41,8 @@
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Wire.hxx>
 #include <TopoDS_Vertex.hxx>
+#include <Poly_Triangulation.hxx>
+#include <TopLoc_Location.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pln.hxx>
@@ -1192,6 +1199,112 @@ TopologyInspectionResult OcctGeometryKernel::inspect_topology(
             .diagnostics = {diagnostic(
                 GeometryErrorCode::kernel_failure, exception_message(error))},
         };
+    }
+}
+
+TessellationResult OcctGeometryKernel::tessellate(
+    const TessellationRequest& request,
+    const CancellationToken& cancellation) const
+{
+    auto failure = [](GeometryDiagnostic error) {
+        TessellationResult result;
+        result.diagnostics.push_back(std::move(error));
+        return result;
+    };
+    if (cancellation.is_cancellation_requested()) {
+        return failure(diagnostic(
+            GeometryErrorCode::cancelled, "display tessellation was cancelled"));
+    }
+    const auto* stored = impl_->body(request.body);
+    if (stored == nullptr) {
+        return failure(diagnostic(
+            GeometryErrorCode::invalid_handle, "body handle is not live"));
+    }
+    if (!finite(request.linear_deflection) || request.linear_deflection <= 0.0
+        || !finite(request.angular_deflection) || request.angular_deflection <= 0.0) {
+        return failure(diagnostic(
+            GeometryErrorCode::invalid_input,
+            "tessellation deflections must be finite and positive"));
+    }
+
+    try {
+        BRepMesh_IncrementalMesh mesh(
+            stored->shape,
+            request.linear_deflection,
+            Standard_False,
+            request.angular_deflection,
+            Standard_True);
+        mesh.Perform();
+        if (!mesh.IsDone()) {
+            return failure(diagnostic(
+                GeometryErrorCode::kernel_failure,
+                "Open CASCADE could not generate display tessellation"));
+        }
+
+        TessellationResult result;
+        result.bounds = summarize_shape(stored->shape).bounds;
+        for (const auto& item : stored->entities) {
+            if (cancellation.is_cancellation_requested()) {
+                return failure(diagnostic(
+                    GeometryErrorCode::cancelled, "display tessellation was cancelled"));
+            }
+            if (item.entity.kind == TopologyKind::face) {
+                const auto face = TopoDS::Face(item.shape);
+                TopLoc_Location location;
+                const auto triangulation = BRep_Tool::Triangulation(face, location);
+                if (triangulation.IsNull()) continue;
+                const auto transform = location.Transformation();
+                for (Standard_Integer index = 1;
+                     index <= triangulation->NbTriangles(); ++index) {
+                    Standard_Integer first{};
+                    Standard_Integer second{};
+                    Standard_Integer third{};
+                    triangulation->Triangle(index).Get(first, second, third);
+                    if (face.Orientation() == TopAbs_REVERSED) std::swap(second, third);
+                    const auto a = triangulation->Node(first).Transformed(transform);
+                    const auto b = triangulation->Node(second).Transformed(transform);
+                    const auto c = triangulation->Node(third).Transformed(transform);
+                    gp_Vec ab(a, b);
+                    gp_Vec ac(a, c);
+                    auto normal = ab.Crossed(ac);
+                    if (normal.SquareMagnitude() <= tolerance * tolerance) continue;
+                    normal.Normalize();
+                    const auto base = static_cast<std::uint32_t>(result.vertices.size());
+                    for (const auto& point : {a, b, c}) {
+                        result.vertices.push_back({
+                            .position = {point.X(), point.Y(), point.Z()},
+                            .normal = {normal.X(), normal.Y(), normal.Z()},
+                        });
+                    }
+                    result.triangles.push_back({
+                        .vertex_indices = {base, base + 1, base + 2},
+                        .face_id = item.entity.id,
+                    });
+                }
+            } else if (item.entity.kind == TopologyKind::edge) {
+                const BRepAdaptor_Curve curve(TopoDS::Edge(item.shape));
+                const auto first = curve.FirstParameter();
+                const auto last = curve.LastParameter();
+                if (!std::isfinite(first) || !std::isfinite(last) || last < first) continue;
+                const Standard_Integer segment_count =
+                    curve.GetType() == GeomAbs_Line ? 1 : 16;
+                DisplayPolyline polyline{.points = {}, .edge_id = item.entity.id};
+                polyline.points.reserve(static_cast<std::size_t>(segment_count + 1));
+                for (Standard_Integer sample = 0; sample <= segment_count; ++sample) {
+                    const auto parameter = first + (last - first)
+                        * static_cast<double>(sample) / static_cast<double>(segment_count);
+                    const auto point = curve.Value(parameter);
+                    polyline.points.push_back({point.X(), point.Y(), point.Z()});
+                }
+                if (polyline.points.size() >= 2) {
+                    result.edge_polylines.push_back(std::move(polyline));
+                }
+            }
+        }
+        return result;
+    } catch (const Standard_Failure& error) {
+        return failure(diagnostic(
+            GeometryErrorCode::kernel_failure, exception_message(error)));
     }
 }
 

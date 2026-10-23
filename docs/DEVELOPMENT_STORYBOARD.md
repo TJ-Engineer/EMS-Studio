@@ -1,8 +1,8 @@
 # Development Storyboard
 
-**Status date:** October 10, 2026
+**Status date:** October 12, 2026
 
-**Current frame:** Gate 0 evidence is complete. The dependency allowlist now fixes the open V1 distribution path, NVIDIA as the first production GPU target, the FP64 CPU reference as numerical authority, and explicit deferrals for GPL-linked meshing and later FEM/GPU stacks. The next implementation target is Reel 4's native Qt 6/QML application shell.
+**Current frame:** Reel 4 is complete. Worker recovery now travels atomically with CAD and ASIR in project-checkpoint v2, validates nested integrity and authority before activation, and resumes exact progress in a fresh desktop session. The next dependency-ready target is heterogeneous CAD-to-worker preparation so the visible worker executes the authored material/role model instead of a homogeneous preview.
 
 This storyboard translates the [architecture and development plan](implemention_plans/Fusio360_Vive_CAD_Architecture_and_Development_Plan.md) into visible product scenes. A completed panel means its stated evidence exists and passes; the panels are not equal in effort, so their count is not a project-completion percentage.
 
@@ -130,19 +130,17 @@ The first EM reel ends with this user-visible story:
 ```mermaid
 flowchart LR
     W["✅ Interactive wireframe<br/>shared CAD + EM workflow"]
-    Q["▶ Native application shell<br/>Qt 6 + QML"]
-    B["○ Engine-bound panels<br/>document + ASIR state"]
-    V["○ Native viewport<br/>scene packets + selection"]
-    J["○ Worker experience<br/>progress + recovery"]
+    Q["✅ Native application shell<br/>Qt 6 + QML"]
+    B["✅ Engine-bound panels<br/>document + ASIR state"]
+    V["✅ Native viewport<br/>scene packets + selection"]
+    J["✅ Worker experience<br/>progress + recovery"]
 
     W --> Q --> B --> V --> J
 
     classDef done fill:#176b3a,color:#ffffff,stroke:#0d4d29,stroke-width:2px;
     classDef active fill:#d97706,color:#ffffff,stroke:#92400e,stroke-width:2px;
     classDef planned fill:#e5e7eb,color:#111827,stroke:#6b7280,stroke-width:1px;
-    class W done;
-    class Q active;
-    class B,V,J planned;
+    class W,Q,B,V,J done;
 ```
 
 The UI reel begins with an interaction prototype that can be reviewed before native toolkit and rendering work harden the layout. It carries one project between CAD Studio and EM Studio so geometry authority, study preparation, and simulation readiness remain one continuous product story.
@@ -150,10 +148,29 @@ The UI reel begins with an interaction prototype that can be reviewed before nat
 | UI panel | Product behavior | Done when |
 |---|---|---|
 | ✅ Interactive wireframe | Shared application chrome, CAD feature browser and history, EM study tree and preflight, contextual inspector, engineering overlays, command palette, and simulated solve progress | The [dependency-free prototype](../apps/ui_wireframe/index.html) loads without external assets, both studios and their selectable entities are represented, interactive JavaScript passes syntax validation, and the files are exposed through the `oep_ui_wireframe` CMake target |
-| ▶ Native application shell | Accessible Qt 6/QML window, shared visual tokens, docking, keyboard navigation, and persisted panel layout | CAD Studio and EM Studio launch the shell on supported desktop platforms and pass navigation/accessibility smoke checks |
-| ○ Engine-bound panels | UI state projects typed document, feature, ASIR, and diagnostic state without owning business rules | Failed, dirty, evaluated, stale, and recovered engine states render from typed adapters and UI actions issue commands/transactions |
-| ○ Native viewport | Immutable scene packets, camera navigation, selection/preselection, clipping, and persistent IDs | A representative assembly remains interactive at the measured viewport target and selections round-trip to document identities |
-| ○ Worker experience | Solver preflight, resource estimate, launch, progress, cancellation, checkpoint, and result provenance | A reference solve survives UI restart and displays authoritative status from the worker contract |
+| ✅ Native application shell | Accessible Qt 6/QML window, shared visual tokens, docking, keyboard navigation, and persisted panel layout | The shared [application host](../modules/platform/app_shell/src/application_qt.cpp), [QML shell](../modules/platform/app_shell/qml/Main.qml), and [layout controller](../modules/platform/app_shell/src/shell_controller.cpp) launch from both products; strict Qt builds, QML lint, offscreen navigation/accessibility launch contracts, and [persistence tests](../tests/unit/app_shell_state_test.cpp) pass |
+| ✅ Engine-bound panels | UI state projects typed document, feature, ASIR, and diagnostic state without owning business rules | [Typed feature projections and controller acceptance](../tests/unit/app_shell_state_test.cpp) cover all six scheduler states, failed/stale CAD, recovery/Undo, rejected commands, and fresh-session CAD+ASIR loading; [ASIR recovery tests](../tests/unit/simulation_ir_test.cpp) verify complete bounded content; [offscreen UI actions](../modules/platform/app_shell/src/application_qt.cpp) exercise authoring and project Save/Open. Transient dirty/evaluating states are presenter-tested; the synchronous host publishes final records. |
+| ✅ Native viewport | Immutable scene packets, camera navigation, selection/preselection, clipping, and persistent IDs | Exact-body lifecycle passes [controller acceptance](../tests/unit/app_shell_state_test.cpp). The [viewport corpus](../tests/unit/viewport_projection_test.cpp) verifies shared immutable LODs, transforms, materials, visibility, occurrence-qualified picking, and 1,048,576 source triangles at an approximately 0.82 ms observed 120-frame average against a 16.667 ms strict-debug gate. GPU/ten-million-triangle work remains a later scalability target. |
+| ✅ Worker experience | Solver preflight, resource estimate, launch, progress, cancellation, checkpoint, and result provenance | The visible Qt controls run the real reference lifecycle through raw artifact collection. Project-checkpoint v2 atomically retains a verified job/checkpoint with CAD and ASIR; [fresh-session controller acceptance](../tests/unit/app_shell_state_test.cpp) restores exact progress, rejects nested corruption and ASIR mismatch before activation, completes, and collects. |
+
+## Reel 5 — Execute the authored electromagnetic model
+
+```mermaid
+flowchart LR
+    H["▶ Heterogeneous preparation<br/>CAD roles → worker grid"]
+    R["○ Normalized results<br/>immutable result sets"]
+    P["○ Numerical antenna path<br/>CPML + calibrated ports"]
+    F["○ Field experience<br/>monitors + visualization"]
+
+    H --> R --> P --> F
+
+    classDef active fill:#d97706,color:#ffffff,stroke:#92400e,stroke-width:2px;
+    classDef planned fill:#e5e7eb,color:#111827,stroke:#6b7280,stroke-width:1px;
+    class H active;
+    class R,P,F planned;
+```
+
+The first Reel 5 slice replaces the Worker tab's bounded homogeneous preview with a validated adapter from the existing traceable CAD-to-grid output. It must preserve ASIR, geometry, material, role, port, solver-build, and resource-estimate authority through preparation and reject unsupported authored policies explicitly.
 
 ## Gate 0 convergence
 
@@ -210,27 +227,59 @@ The interactive UI wireframe now makes this foundation visible without introduci
 3. materials, persistent roles, RMS-normalized port setup, boundaries, monitors, the Cartesian grid, ASIR authority, and preflight status;
 4. viewport grid and engineering-overlay controls, keyboard command discovery, and a synthetic reference-solve progress flow.
 
-The wireframe is intentionally dependency-free so it can be reviewed now. It does not mutate documents or run the solver. Those actions stay with the compiled command, transaction, and worker boundaries when the layout moves into the planned Qt 6/QML shell.
+The wireframe remains a dependency-free interaction reference. It does not mutate documents or run the solver. Those actions stay with the compiled command, transaction, and worker boundaries.
 
-The [dependency and license matrix](product/DEPENDENCY_LICENSE_MATRIX.md) now records the current OCCT/oneTBB path and gates Qt, Kokkos, Open MPI, CUDA, VTK, and HDF5 behind pinned versions, transitive-license review, adapter tests, notices, and artifact-level SBOM evidence. MFEM/PETSc/hypre stay with the later FEM program, and Gmsh remains outside the linked or bundled open V1 baseline under its GPL terms.
+The native application shell now turns that interaction vocabulary into one compiled desktop surface:
+
+1. CAD Studio and EM Studio call the same `oep::app_shell` host and select their initial workspace explicitly.
+2. The exact Qt 6.4.2 build enables only Core, Gui, Qml, Quick, and Quick Controls 2. The Ubuntu bootstrap extracts a checksum-locked local SDK without changing the host installation.
+3. Shared QML tokens drive the shell chrome, focus treatment, status colors, and panel styling.
+4. Horizontal and vertical split views provide resizable project, viewport, inspector, and diagnostic regions. Widths, heights, and visibility survive restart through versioned settings keys, while each executable remains authoritative for its initial workspace.
+5. Menus, focusable controls, accessible names and descriptions, `Ctrl+1`/`Ctrl+2` workspace switching, `Ctrl+K` command discovery, `Ctrl+J` diagnostics, Tab navigation, and Escape behavior establish the keyboard and accessibility baseline.
+6. The CAD browser, revision status, diagnostics, and undo/redo use the host-attached document adapter. The EM browser, setup inspector, and scrollable preflight project a real ASIR draft and validator report. In `qt-cad`, the center renders current exact geometry and returns occurrence-qualified persistent face IDs.
+7. The EM Worker tab binds execution provenance, displays a calibrated bounded estimate, and runs the reference lifecycle with progress, cancellation, checkpoint, fresh-worker resume, and raw artifact collection.
+8. The Qt-only preset passes twenty-six checks and the Qt + OCCT preset passes twenty-nine, including QML lint, persisted shell state, deterministic viewport behavior, exact-body scene lifecycle, and visible Worker control acceptance. Both desktop entry points load the complete shell offscreen and assert its navigation/accessibility contract.
+
+The [dependency and license matrix](product/DEPENDENCY_LICENSE_MATRIX.md) now records the current OCCT/oneTBB path, the optional checksum-locked Qt 6.4.2 development path, and gates Kokkos, Open MPI, CUDA, VTK, and HDF5 behind pinned versions, transitive-license review, adapter tests, notices, and artifact-level SBOM evidence. MFEM/PETSc/hypre stay with the later FEM program, and Gmsh remains outside the linked or bundled open V1 baseline under its GPL terms.
 
 The [compute support policy](product/COMPUTE_SUPPORT_POLICY.md) keeps the implemented FP64 single-threaded solver as the correctness authority, selects Kokkos OpenMP and NVIDIA CUDA as the first production CPU/GPU profiles, and makes Linux Open MPI the first distributed profile. HIP, SYCL, Apple GPU, mixed precision, and unqualified multi-GPU execution remain explicit deferrals. Current WSL2 results are functional evidence only; native workstation and cluster hardware must be named before performance claims.
 
-With Gate 0 closed, Reel 4 resumes at the native Qt 6/QML application shell. The first shell slice must preserve the worker and engine boundaries, use only the LGPL-verified module allowlist, and establish shared visual tokens, keyboard navigation, accessibility semantics, and persistent layout without moving business rules into QML.
+The engine-bound UI now exposes these reviewable workflows:
+
+| Visible workflow | Acceptance evidence |
+|---|---|
+| Create the five-feature OCCT example, select a feature, edit parameters, diagnose regeneration, and undo/redo | [Shell controller](../modules/platform/app_shell/src/shell_controller.cpp), [controller acceptance](../tests/unit/app_shell_state_test.cpp), and [offscreen UI actions](../modules/platform/app_shell/src/application_qt.cpp) |
+| Save/reopen valid or failed CAD, recover through Undo, and preserve the active document when loading fails | Atomic checkpoint path plus controller tests for corrupt/incompatible input and exact-kernel hydration |
+| Prepare an ASIR snapshot, edit its frequency band, and see stale/failed CAD authority without silently rewriting the study | [Draft and command implementation](../modules/em/simulation_ir/src/cad_study_draft.cpp), [ASIR tests](../tests/unit/simulation_ir_test.cpp), and controller/UI acceptance |
+| Assign resolved final-body faces to roles and discrete ports; replace or remove definitions explicitly | Persistent feature/local IDs and semantic labels; rejected unknown topology, invalid impedance/orientation, stale fingerprints, and stale CAD leave the draft unchanged |
+| Create/load/edit nondispersive materials and bind conductor, dielectric, ground, air/vacuum, or keep-out face roles | Typed material properties, explicit provenance and validity bands; atomic property/band rejection, incremental repair after frequency-band changes, material-dependent deletion guards, accurate property projection, and actual QML Apply/load actions pass |
+| Author open-PML/PEC boundary policies and S-parameter/impedance monitors with declared ports and frequency bands | [Compiled setup commands](../modules/em/simulation_ir/src/cad_study_draft.cpp), [ASIR command tests](../tests/unit/simulation_ir_test.cpp), [controller acceptance](../tests/unit/app_shell_state_test.cpp), and offscreen Apply actions prove atomic rejection, referenced-port/background protection, incremental monitor-band repair, and missing-setup diagnostics after removal |
+| Save/reopen CAD and complete ASIR together, retaining stale/incomplete setup and failed-CAD history | [Recovery codec](../modules/em/simulation_ir/src/project_checkpoint.cpp), [ASIR bounds/content tests](../tests/unit/simulation_ir_test.cpp), fresh-session controller recovery, and actual offscreen File Save/Open actions pass; corrupt input preserves the active project |
+| Estimate and run a bounded reference preview; cancel, checkpoint, resume in a fresh worker, complete, and collect raw provenance-bearing artifacts | [Worker tab](../modules/platform/app_shell/qml/Main.qml), [controller lifecycle](../modules/platform/app_shell/src/shell_controller.cpp), [controller acceptance](../tests/unit/app_shell_state_test.cpp), and offscreen visible-control actions pass; checkpoint persistence across desktop restart remains open |
+
+The [native QML presentation](../modules/platform/app_shell/qml/Main.qml) now adopts the web reference’s compact toolbar, browser filtering, rail navigation, grid/status-overlay toggles, and dock tabs with selectable live feature cards. In `qt-cad`, the viewport displays the current evaluated OCCT body with shaded faces and edge curves. Dragging orbits/pans, the wheel zooms, Fit reframes, Clip sections the model, and hover/click highlights persistent face IDs. The [immutable scene-packet boundary](../modules/cad/tessellation/include/oep/tessellation/scene_packet.hpp) prevents Qt from owning exact geometry. Shared instances add transforms, materials, visibility, budget-selected LODs, and occurrence-qualified picking. Manual visual review, GPU/ten-million-triangle qualification, and full web parity remain outstanding.
+
+The [collapsible inspector component](../modules/platform/app_shell/qml/InspectorSection.qml) groups Frequency, Materials, Persistent face roles, Discrete ports, Boundary policies, and Requested observables. [Offscreen acceptance](../modules/platform/app_shell/src/application_qt.cpp) toggles all six sections and verifies unsaved material entries and the study fingerprint are preserved. Section expansion is session-only presentation state.
+
+The native host starts without a document. **Save/Open CAD + EM project** atomically retains CAD history and all ASIR fields with document identity and study fingerprint. Stale/incomplete drafts and failed CAD remain honest after reopening. CAD-only checkpoints still omit EM settings. Rebuilding a draft explicitly resets its material, frequency, role, port, boundary and monitor settings. Structural preflight does not calibrate ports or enable a solve.
+
+Periodic/symmetry boundary editing and field/far-field monitor editing remain planned. General feature creation, GPU buffers, adaptive LOD generation, and solved-field visualization remain unfinished. Open PML is a study policy; the 3-D reference solver still lacks CPML. Native viewport and Worker Experience are complete. Heterogeneous CAD-to-worker preparation is active; the current Worker tab still runs a bounded homogeneous preview and does not consume general B-rep material volumes.
+
+Maintenance comment evidence: [geometry contracts](../modules/em/em_geometry/include/oep/em_geometry/computational_geometry.hpp), [viewport design](architecture/sdd/VIEWPORT_SDD.md), [worker experience design](architecture/sdd/WORKER_EXPERIENCE_SDD.md), [document authority](../modules/platform/document/src/document.cpp), and [ongoing comment requirements](../AGENTS.md). Viewport and worker contracts carry ownership/invariant comments; [ADR 0011](architecture/decisions/0011-immutable-viewport-scene-packets.md) and [ADR 0012](architecture/decisions/0012-desktop-reference-worker-experience.md) record the material boundaries and remaining limits.
 
 ## Progress snapshot
 
 | Area | Present state |
 |---|---|
-| Build | C++20 CMake/Ninja monorepo; four process targets; optional locally bootstrapped OCCT build |
+| Build | C++20 CMake/Ninja monorepo; four process targets; optional locally bootstrapped OCCT and exact Qt 6.4.2 builds |
 | Project license | Project-owned work uses MIT with SPDX headers; the V1 dependency allowlist, LGPL/GPL/proprietary distribution boundaries, adoption checklist, and CPU/GPU support tiers are documented; artifact-level SBOM/notices, authorized release review, and contribution governance remain release work |
-| Compiled libraries | `oep::document`, `oep::persistence`, `oep::ipc`, `oep::sketch`, `oep::modeler`, `oep::topology_id`, `oep::cad_feature_model`, `oep::simulation_ir`, `oep::em_geometry`, `oep::em_mesh`, `oep::fdtd_engine`, `oep::simulation_cost`, `oep::simulation_orchestrator`, and optional `oep::occt_geometry_kernel` |
-| Automated checks | Default preset: twenty-three CTest entries; OCCT preset: twenty-six entries including ASIR validation, CAD-to-grid mapping, Maxwell and port oracles, FDTD and measured cost acceptance, worker lifecycle/process restart, exact-kernel, topology-mutation, and full modeling-thread coverage |
-| Strictness | Warnings treated as errors; default and OCCT builds pass; all 23 default and 26 OCCT-enabled checks pass ASan/UBSan with leak checking disabled under the traced test environment |
+| Compiled libraries | `oep::app_shell`, `oep::document`, `oep::persistence`, `oep::ipc`, `oep::sketch`, `oep::modeler`, `oep::topology_id`, `oep::cad_feature_model`, `oep::tessellation`, `oep::viewport`, `oep::simulation_ir`, `oep::em_geometry`, `oep::em_mesh`, `oep::fdtd_engine`, `oep::simulation_cost`, `oep::simulation_orchestrator`, and optional `oep::occt_geometry_kernel` |
+| Automated checks | All 24 `dev`, 27 `occt-local`, 26 `qt-shell`, and 29 `qt-cad` CTest entries pass. Every profile includes deterministic viewport camera/clipping/picking and the assembly/LOD performance corpus; `qt-cad` additionally exercises live exact-body tessellation, persistent-ID selection, failed-regeneration clearing, Worker lifecycle, and offscreen QML actions. |
+| Strictness | Warnings are treated as errors; `dev`, `occt-local`, `qt-shell`, and `qt-cad` builds and complete test inventories pass with the viewport and Worker-tab integration. |
 | Data safety | Typed stale-geometry denial, DAG and journal replay validation, bounded checkpoint and IPC decoding, checksum verification, content/provenance checks, atomic replacement |
 | Feature evaluation | Stable feature IDs and typed inputs; deterministic topological scheduling; minimal dirty propagation; blocked descendants; atomic cycle rejection |
 | Geometry capability | Deterministic constrained sketches; kernel-neutral exact-body features; persistent topology decisions; restart-safe sketch → extrude → fillet → attached sketch → cut evaluation |
-| Desktop capability | CAD/EM process entry points, a runnable shared interaction wireframe, and a typed simulation-worker process boundary exist; the Qt/QML shell, engine bindings, and native viewport are not implemented yet |
+| Desktop capability | CAD/EM entry points share a native Qt/QML shell with menus, workspace switching, dock-style split panels, command palette, keyboard/accessibility semantics, persisted layout, and a native exact-body viewport in `qt-cad`; the viewport supports assembly instances, shared LODs, transforms/materials/visibility, camera/clipping, occurrence-qualified persistent picking, and honest failed-geometry clearing; the Worker tab exposes the real in-process reference lifecycle and atomically restores a verified checkpoint with CAD+ASIR in a fresh session; heterogeneous worker preparation and GPU/ten-million-triangle qualification remain unfinished |
 | EM capability | Validated ASIR 0.1, independent Maxwell and RMS multiport harnesses, the FP64 reference CPU Yee solver, traceable axis-aligned CAD-to-grid mapping, measured reference resource estimates, and checkpoint-restart worker execution are complete; general B-rep intersection, 3-D CPML, calibrated solver ports, heterogeneous updates, production kernels, and normalized result storage remain planned |
 
 ## Updating this storyboard

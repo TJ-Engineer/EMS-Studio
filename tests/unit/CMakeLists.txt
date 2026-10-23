@@ -25,6 +25,12 @@ target_link_libraries(topology_identity_test PRIVATE oep::topology_id)
 
 add_test(NAME unit.topology_identity COMMAND topology_identity_test)
 
+add_executable(viewport_projection_test viewport_projection_test.cpp)
+oep_apply_target_defaults(viewport_projection_test)
+target_link_libraries(viewport_projection_test PRIVATE oep::viewport)
+
+add_test(NAME unit.viewport_projection COMMAND viewport_projection_test)
+
 add_executable(sketch_solver_test sketch_solver_test.cpp)
 oep_apply_target_defaults(sketch_solver_test)
 target_link_libraries(sketch_solver_test PRIVATE oep::sketch)
@@ -70,3 +76,11 @@ oep_apply_target_defaults(ipc_frame_test)
 target_link_libraries(ipc_frame_test PRIVATE oep::ipc)
 
 add_test(NAME unit.ipc_frame COMMAND ipc_frame_test)
+
+if(OEP_ENABLE_QT_SHELL)
+    add_executable(app_shell_state_test app_shell_state_test.cpp)
+    oep_apply_target_defaults(app_shell_state_test)
+    target_link_libraries(app_shell_state_test PRIVATE oep::app_shell Qt6::Core)
+
+    add_test(NAME unit.app_shell_state COMMAND app_shell_state_test)
+endif()

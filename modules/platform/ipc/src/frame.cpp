@@ -1,6 +1,10 @@
 // SPDX-FileCopyrightText: 2026 Open Engineering Platform contributors
 // SPDX-License-Identifier: MIT
 
+// Versioned binary IPC framing with correlation IDs, integrity checks, and
+// bounded decoding. Checksums detect corruption; they do not authenticate a peer.
+// Message-specific payload validation belongs to the consuming protocol.
+
 #include <oep/ipc/frame.hpp>
 
 #include <array>
@@ -84,6 +88,8 @@ private:
     std::vector<std::byte> bytes_;
 };
 
+// Treat every encoded length as untrusted. Bounds checks belong before
+// reading or allocating so malformed input cannot become unchecked indexing.
 class Reader {
 public:
     explicit Reader(const std::span<const std::byte> bytes)

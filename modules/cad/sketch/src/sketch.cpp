@@ -1,6 +1,10 @@
 // SPDX-FileCopyrightText: 2026 Open Engineering Platform contributors
 // SPDX-License-Identifier: MIT
 
+// Deterministic sketch constraints use stable entity IDs and parameter bindings.
+// Solver classification distinguishes remaining freedom from contradictory
+// constraints; callers must inspect the result before constructing exact geometry.
+
 #include <oep/sketch/sketch.hpp>
 
 #include <algorithm>
@@ -447,6 +451,9 @@ SolveResult Solver::solve(const Definition& definition) const
             break;
         }
 
+        // Damped normal equations regularize rank-deficient constraint systems.
+        // Backtracking below accepts only a residual decrease; convergence alone
+        // does not establish that all degrees of freedom are constrained.
         const auto variable_count = values.size();
         std::vector normal(variable_count, std::vector<double>(variable_count, 0.0));
         std::vector gradient(variable_count, 0.0);

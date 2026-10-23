@@ -1,6 +1,10 @@
 // SPDX-FileCopyrightText: 2026 Open Engineering Platform contributors
 // SPDX-License-Identifier: MIT
 
+// Persistent topology identity is separate from transient kernel entity IDs.
+// Reconciliation combines operation provenance with geometric signatures;
+// ambiguous or deleted references must be diagnosed rather than silently rebound.
+
 #pragma once
 
 #include <oep/modeler/kernel_adapter.hpp>

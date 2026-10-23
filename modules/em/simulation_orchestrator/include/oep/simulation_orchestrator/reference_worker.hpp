@@ -1,6 +1,10 @@
 // SPDX-FileCopyrightText: 2026 Open Engineering Platform contributors
 // SPDX-License-Identifier: MIT
 
+// Local reference-worker lifecycle owns solver state and job artifacts.
+// Validation precedes allocation, bounded slices expose progress/cancellation,
+// and checkpoint resume must preserve the original job and solver identity.
+
 #pragma once
 
 #include <oep/em_solver_api/solver_api.hpp>

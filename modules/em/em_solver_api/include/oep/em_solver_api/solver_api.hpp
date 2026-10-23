@@ -1,6 +1,10 @@
 // SPDX-FileCopyrightText: 2026 Open Engineering Platform contributors
 // SPDX-License-Identifier: MIT
 
+// Solver-neutral worker messages carry immutable study identity, resource
+// estimates, progress, and artifacts. Keep numerical field ownership in workers;
+// UI and transport consumers should depend on these value types instead.
+
 #pragma once
 
 #include <cstddef>

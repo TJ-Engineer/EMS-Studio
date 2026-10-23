@@ -20,3 +20,16 @@ Project-owned software and documentation use the MIT License in the root `LICENS
 - Put SPDX lines immediately after the interpreter line in executable scripts.
 - Markdown and JSON files are covered by the root license and do not require inline license comments.
 - Preserve third-party copyright and license notices. Do not replace them with the project header.
+
+## Maintenance comments
+
+- Document source/header responsibilities and public contracts: ownership, lifetime, units, authority, preconditions, failure behavior, and supported limitations.
+- Explain non-obvious algorithms and invariants near the code that enforces them, especially atomic commits, identity reconciliation, numerical conventions, and bounded decoding.
+- Explain why a decision is necessary; avoid comments that merely repeat a statement or accessor name.
+- Update nearby comments when behavior changes. Comments must describe implemented behavior and distinguish planned capabilities.
+
+## Software design descriptions
+
+- Maintain `docs/architecture/sdd/` alongside changes to subsystem interfaces, authority/ownership, algorithms, formats, lifecycles, dependencies, and supported limitations.
+- Link design claims to implementation and validating evidence; distinguish implemented behavior from planned integrations.
+- Record material design decisions in ADRs and update the SDD baseline and affected verification references in the same change.

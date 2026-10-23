@@ -1,6 +1,10 @@
 // SPDX-FileCopyrightText: 2026 Open Engineering Platform contributors
 // SPDX-License-Identifier: MIT
 
+// Document authority separates semantic revisions from evaluated geometry.
+// A committed edit may fail regeneration; consumers must request current geometry
+// rather than treating the last successful snapshot as the current model.
+
 #pragma once
 
 #include <compare>

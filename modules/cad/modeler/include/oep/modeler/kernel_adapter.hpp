@@ -1,6 +1,10 @@
 // SPDX-FileCopyrightText: 2026 Open Engineering Platform contributors
 // SPDX-License-Identifier: MIT
 
+// Kernel-neutral modeling boundary: handles identify adapter-owned exact bodies,
+// not persistent document entities. Operation diagnostics and topology provenance
+// allow callers to distinguish geometric failure from reference reconciliation.
+
 #pragma once
 
 #include <atomic>
@@ -17,6 +21,8 @@
 
 namespace oep::modeler {
 
+// Opaque instance-local body identity. Do not serialize this value as a
+// persistent topology reference; use snapshots and reconciled IDs instead.
 struct ExactBodyHandle {
     std::uint64_t value{};
 
@@ -221,6 +227,40 @@ struct TopologyInspectionResult {
     [[nodiscard]] bool succeeded() const noexcept { return diagnostics.empty(); }
 };
 
+// Disposable render data generated from an exact body. Kernel topology IDs
+// remain attached to primitives so the tessellation layer can translate them
+// to document-persistent identities without exposing kernel-native objects.
+struct DisplayVertex {
+    Point3d position;
+    Vector3d normal;
+};
+
+struct DisplayTriangle {
+    std::array<std::uint32_t, 3> vertex_indices{};
+    KernelTopologyId face_id;
+};
+
+struct DisplayPolyline {
+    std::vector<Point3d> points;
+    KernelTopologyId edge_id;
+};
+
+struct TessellationRequest {
+    ExactBodyHandle body;
+    double linear_deflection{0.2};
+    double angular_deflection{0.35};
+};
+
+struct TessellationResult {
+    std::vector<DisplayVertex> vertices;
+    std::vector<DisplayTriangle> triangles;
+    std::vector<DisplayPolyline> edge_polylines;
+    BoundingBox bounds;
+    std::vector<GeometryDiagnostic> diagnostics;
+
+    [[nodiscard]] bool succeeded() const noexcept { return diagnostics.empty(); }
+};
+
 struct PlanarFaceResult {
     std::optional<PlaneFrame> frame;
     std::vector<GeometryDiagnostic> diagnostics;
@@ -302,6 +342,11 @@ public:
     [[nodiscard]] virtual TopologyInspectionResult inspect_topology(
         ExactBodyHandle body,
         const CancellationToken& cancellation) const = 0;
+    // Adapters may decline display tessellation. A default implementation keeps
+    // non-rendering test kernels source-compatible with the modeling contract.
+    [[nodiscard]] virtual TessellationResult tessellate(
+        const TessellationRequest& request,
+        const CancellationToken& cancellation) const;
     [[nodiscard]] virtual BodySnapshotResult snapshot(
         ExactBodyHandle body,
         const CancellationToken& cancellation) const = 0;

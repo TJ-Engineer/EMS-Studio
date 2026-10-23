@@ -1,6 +1,10 @@
 // SPDX-FileCopyrightText: 2026 Open Engineering Platform contributors
 // SPDX-License-Identifier: MIT
 
+// ASIR is the solver-neutral study contract, including dimensioned SI values,
+// CAD authority, persistent references, and execution provenance. Structural
+// validation and canonical content identity are separate from solving a study.
+
 #include <oep/simulation_ir/simulation_ir.hpp>
 
 #include <algorithm>
@@ -1217,6 +1221,9 @@ ValidationReport Validator::validate(
     return report;
 }
 
+// Hash canonical study content rather than authoring container order.
+// Any change to canonical encoding can invalidate saved study identities;
+// coordinate such changes with the ASIR version and fingerprint tests.
 std::string canonical_fingerprint(const AntennaStudy& study)
 {
     CanonicalWriter writer;

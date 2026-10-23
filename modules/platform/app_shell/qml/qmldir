@@ -1,0 +1,6 @@
+# SPDX-FileCopyrightText: 2026 Open Engineering Platform contributors
+# SPDX-License-Identifier: MIT
+
+module Oep.AppShell
+ShellButton 1.0 ShellButton.qml
+InspectorSection 1.0 InspectorSection.qml

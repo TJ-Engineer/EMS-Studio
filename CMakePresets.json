@@ -44,6 +44,34 @@
         "OEP_ENABLE_STRICT_WARNINGS": "ON",
         "OEP_OCCT_ROOT": "${sourceDir}/build/occt-sdk/usr"
       }
+    },
+    {
+      "name": "qt-shell",
+      "displayName": "Native Qt shell (Qt 6.4.2)",
+      "inherits": "base",
+      "environment": {
+        "LD_LIBRARY_PATH": "${sourceDir}/build/qt-sdk/usr/lib/x86_64-linux-gnu:${sourceDir}/build/qt-sdk/usr/lib/x86_64-linux-gnu/libproxy:$penv{LD_LIBRARY_PATH}",
+        "QML2_IMPORT_PATH": "${sourceDir}/build/qt-sdk/usr/lib/x86_64-linux-gnu/qt6/qml",
+        "QT_PLUGIN_PATH": "${sourceDir}/build/qt-sdk/usr/lib/x86_64-linux-gnu/qt6/plugins"
+      },
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "OEP_ENABLE_QT_SHELL": "ON",
+        "OEP_ENABLE_STRICT_WARNINGS": "ON",
+        "OEP_QT_ROOT": "${sourceDir}/build/qt-sdk/usr",
+        "OEP_QT_VERSION": "6.4.2"
+      }
+    },
+    {
+      "name": "qt-cad",
+      "inherits": "qt-shell",
+      "cacheVariables": {
+        "OEP_ENABLE_OCCT_ADAPTER": "ON",
+        "OEP_OCCT_ROOT": "${sourceDir}/build/occt-sdk/usr"
+      },
+      "environment": {
+        "LD_LIBRARY_PATH": "${sourceDir}/build/occt-sdk/usr/lib/x86_64-linux-gnu:${sourceDir}/build/qt-sdk/usr/lib/x86_64-linux-gnu:${sourceDir}/build/qt-sdk/usr/lib/x86_64-linux-gnu/libproxy:$penv{LD_LIBRARY_PATH}"
+      }
     }
   ],
   "buildPresets": [
@@ -58,6 +86,22 @@
     {
       "name": "occt-local",
       "configurePreset": "occt-local"
+    },
+    {
+      "name": "qt-shell",
+      "configurePreset": "qt-shell",
+      "targets": [
+        "all",
+        "oep_qml_lint"
+      ]
+    },
+    {
+      "name": "qt-cad",
+      "configurePreset": "qt-cad",
+      "targets": [
+        "all",
+        "oep_qml_lint"
+      ]
     }
   ],
   "testPresets": [
@@ -71,6 +115,34 @@
     {
       "name": "occt-local",
       "configurePreset": "occt-local",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "qt-shell",
+      "configurePreset": "qt-shell",
+      "environment": {
+        "LD_LIBRARY_PATH": "${sourceDir}/build/qt-sdk/usr/lib/x86_64-linux-gnu:${sourceDir}/build/qt-sdk/usr/lib/x86_64-linux-gnu/libproxy:$penv{LD_LIBRARY_PATH}",
+        "QML2_IMPORT_PATH": "${sourceDir}/build/qt-sdk/usr/lib/x86_64-linux-gnu/qt6/qml",
+        "QT_PLUGIN_PATH": "${sourceDir}/build/qt-sdk/usr/lib/x86_64-linux-gnu/qt6/plugins",
+        "QT_QPA_PLATFORM": "offscreen",
+        "QSG_RHI_BACKEND": "software"
+      },
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "qt-cad",
+      "configurePreset": "qt-cad",
+      "environment": {
+        "LD_LIBRARY_PATH": "${sourceDir}/build/occt-sdk/usr/lib/x86_64-linux-gnu:${sourceDir}/build/qt-sdk/usr/lib/x86_64-linux-gnu:${sourceDir}/build/qt-sdk/usr/lib/x86_64-linux-gnu/libproxy:$penv{LD_LIBRARY_PATH}",
+        "QML2_IMPORT_PATH": "${sourceDir}/build/qt-sdk/usr/lib/x86_64-linux-gnu/qt6/qml",
+        "QT_PLUGIN_PATH": "${sourceDir}/build/qt-sdk/usr/lib/x86_64-linux-gnu/qt6/plugins",
+        "QT_QPA_PLATFORM": "offscreen",
+        "QSG_RHI_BACKEND": "software"
+      },
       "output": {
         "outputOnFailure": true
       }

@@ -1,6 +1,10 @@
 // SPDX-FileCopyrightText: 2026 Open Engineering Platform contributors
 // SPDX-License-Identifier: MIT
 
+// Maps prepared axis-aligned regions and patches onto a bounded Cartesian grid.
+// Retain persistent source IDs and subcell occupancy for diagnostics: selecting a
+// dominant material does not remove the geometric staircasing error.
+
 #pragma once
 
 #include <oep/em_geometry/computational_geometry.hpp>
@@ -22,6 +26,8 @@ struct CellIndex {
     bool operator==(const CellIndex&) const = default;
 };
 
+// Origin and spacing are SI meters. The cell cap is an allocation guard;
+// material_assignment_threshold chooses a dominant material from occupancy.
 struct CartesianGridSpec {
     em_geometry::Point3d origin_m;
     std::array<std::size_t, 3> cell_counts{};

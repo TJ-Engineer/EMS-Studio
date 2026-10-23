@@ -1,6 +1,10 @@
 // SPDX-FileCopyrightText: 2026 Open Engineering Platform contributors
 // SPDX-License-Identifier: MIT
 
+// FP64 CPU Yee solver used as the numerical correctness reference. Electric
+// and magnetic fields occupy staggered locations and times; preserve that
+// convention in updates, energy calculations, and checkpoint restoration.
+
 #pragma once
 
 #include <cstddef>

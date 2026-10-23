@@ -1,6 +1,10 @@
 // SPDX-FileCopyrightText: 2026 Open Engineering Platform contributors
 // SPDX-License-Identifier: MIT
 
+// OCCT implementation of the kernel-neutral contract. Keep OCCT types inside
+// this adapter so document and EM code depend on stable project types. Exact-body
+// handles are local to this kernel instance; snapshots provide the restart path.
+
 #pragma once
 
 #include <oep/modeler/kernel_adapter.hpp>
@@ -43,6 +47,9 @@ public:
         const CancellationToken& cancellation) const override;
     [[nodiscard]] TopologyInspectionResult inspect_topology(
         ExactBodyHandle body,
+        const CancellationToken& cancellation) const override;
+    [[nodiscard]] TessellationResult tessellate(
+        const TessellationRequest& request,
         const CancellationToken& cancellation) const override;
     [[nodiscard]] BodySnapshotResult snapshot(
         ExactBodyHandle body,

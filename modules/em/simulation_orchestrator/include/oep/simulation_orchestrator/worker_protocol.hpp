@@ -1,6 +1,10 @@
 // SPDX-FileCopyrightText: 2026 Open Engineering Platform contributors
 // SPDX-License-Identifier: MIT
 
+// Encodes solver-neutral commands and replies inside correlated IPC frames.
+// Payload decoding has its own text, collection, and blob bounds in addition
+// to outer frame limits; neither layer should trust lengths from the other.
+
 #pragma once
 
 #include <oep/em_solver_api/solver_api.hpp>
@@ -9,6 +13,7 @@
 
 #include <cstdint>
 #include <optional>
+#include <span>
 #include <string>
 #include <variant>
 #include <vector>
@@ -90,11 +95,36 @@ struct WorkerReplyDecodeResult {
     [[nodiscard]] bool succeeded() const noexcept { return reply.has_value(); }
 };
 
+// Durable desktop recovery stores the same job/checkpoint pair used by the
+// versioned resume command. The outer project file remains responsible for CAD
+// and ASIR identity; this nested record protects worker payload integrity and
+// preserves the solver-neutral process contract.
+struct WorkerRecoveryRecord {
+    em_solver_api::PreparedSimulationJob job;
+    em_solver_api::CheckpointArtifact checkpoint;
+
+    bool operator==(const WorkerRecoveryRecord&) const = default;
+};
+
+struct WorkerRecoveryDecodeResult {
+    std::optional<WorkerRecoveryRecord> recovery;
+    std::vector<em_solver_api::WorkerDiagnostic> diagnostics;
+
+    [[nodiscard]] bool succeeded() const noexcept
+    {
+        return recovery.has_value();
+    }
+};
+
 [[nodiscard]] ipc::Frame encode_worker_request(const WorkerRequest& request);
 [[nodiscard]] WorkerRequestDecodeResult decode_worker_request(
     const ipc::Frame& frame);
 [[nodiscard]] ipc::Frame encode_worker_reply(const WorkerReply& reply);
 [[nodiscard]] WorkerReplyDecodeResult decode_worker_reply(const ipc::Frame& frame);
+[[nodiscard]] std::vector<std::byte> encode_worker_recovery(
+    const WorkerRecoveryRecord& recovery);
+[[nodiscard]] WorkerRecoveryDecodeResult decode_worker_recovery(
+    std::span<const std::byte> encoded);
 
 class WorkerProtocolSession {
 public:

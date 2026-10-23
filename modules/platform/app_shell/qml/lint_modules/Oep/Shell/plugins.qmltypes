@@ -1,0 +1,190 @@
+// SPDX-FileCopyrightText: 2026 Open Engineering Platform contributors
+// SPDX-License-Identifier: MIT
+
+import QtQuick.tooling 1.2
+
+Module {
+    Component {
+        name: "oep::app_shell::ShellController"
+        accessSemantics: "reference"
+        prototype: "QObject"
+        exports: ["Oep.Shell/ShellController 1.0"]
+
+        Property { name: "currentWorkspace"; type: "QString"; isReadonly: true; notify: "workspace_changed" }
+        Property { name: "productName"; type: "QString"; isReadonly: true }
+        Property { name: "version"; type: "QString"; isReadonly: true }
+        Property { name: "leftPanelWidth"; type: "double"; isReadonly: true; notify: "layout_changed" }
+        Property { name: "rightPanelWidth"; type: "double"; isReadonly: true; notify: "layout_changed" }
+        Property { name: "bottomPanelHeight"; type: "double"; isReadonly: true; notify: "layout_changed" }
+        Property { name: "leftPanelVisible"; type: "bool"; isReadonly: true; notify: "layout_changed" }
+        Property { name: "rightPanelVisible"; type: "bool"; isReadonly: true; notify: "layout_changed" }
+        Property { name: "bottomPanelVisible"; type: "bool"; isReadonly: true; notify: "layout_changed" }
+        Property { name: "hasViewportScene"; type: "bool"; isReadonly: true; notify: "viewport_changed" }
+        Property { name: "viewportStatus"; type: "QString"; isReadonly: true; notify: "viewport_changed" }
+        Property { name: "viewportSelection"; type: "QString"; isReadonly: true; notify: "viewport_changed" }
+        Property { name: "viewportPreselection"; type: "QString"; isReadonly: true; notify: "viewport_changed" }
+        Property { name: "viewportClipFraction"; type: "double"; isReadonly: true; notify: "viewport_changed" }
+        Property { name: "canPrepareWorker"; type: "bool"; isReadonly: true; notify: "worker_changed" }
+        Property { name: "canLaunchWorker"; type: "bool"; isReadonly: true; notify: "worker_changed" }
+        Property { name: "workerRunning"; type: "bool"; isReadonly: true; notify: "worker_changed" }
+        Property { name: "canCheckpointWorker"; type: "bool"; isReadonly: true; notify: "worker_changed" }
+        Property { name: "canCollectWorker"; type: "bool"; isReadonly: true; notify: "worker_changed" }
+        Property { name: "hasWorkerCheckpoint"; type: "bool"; isReadonly: true; notify: "worker_changed" }
+        Property { name: "hasWorkerArtifacts"; type: "bool"; isReadonly: true; notify: "worker_changed" }
+        Property { name: "workerProgress"; type: "double"; isReadonly: true; notify: "worker_changed" }
+        Property { name: "workerStatus"; type: "QString"; isReadonly: true; notify: "worker_changed" }
+        Property { name: "workerEstimate"; type: "QString"; isReadonly: true; notify: "worker_changed" }
+        Method { name: "prepareWorkerJob"; type: "bool" }
+        Method { name: "launchWorker"; type: "bool" }
+        Method { name: "advanceWorker"; type: "bool" }
+        Method { name: "cancelWorker"; type: "bool" }
+        Method { name: "checkpointWorker"; type: "bool" }
+        Method { name: "restartWorkerFromCheckpoint"; type: "bool" }
+        Method { name: "collectWorkerArtifacts"; type: "bool" }
+        Method { name: "viewportFrame"; type: "QVariant"
+            Parameter { name: "width"; type: "double" }
+            Parameter { name: "height"; type: "double" }
+        }
+        Method { name: "orbitViewport"; Parameter { name: "delta_x"; type: "double" } Parameter { name: "delta_y"; type: "double" } }
+        Method { name: "panViewport"; Parameter { name: "delta_x"; type: "double" } Parameter { name: "delta_y"; type: "double" } }
+        Method { name: "zoomViewport"; Parameter { name: "wheel_delta"; type: "double" } }
+        Method { name: "fitViewport" }
+        Method { name: "setViewportClip"; Parameter { name: "fraction"; type: "double" } }
+        Method { name: "preselectViewport"; Parameter { name: "x"; type: "double" } Parameter { name: "y"; type: "double" } Parameter { name: "width"; type: "double" } Parameter { name: "height"; type: "double" } }
+        Method { name: "selectViewport"; Parameter { name: "x"; type: "double" } Parameter { name: "y"; type: "double" } Parameter { name: "width"; type: "double" } Parameter { name: "height"; type: "double" } }
+
+        Property { name: "documentStatus"; type: "QString"; isReadonly: true; notify: "document_changed" }
+        Property { name: "featureRows"; type: "QStringList"; isReadonly: true; notify: "document_changed" }
+        Property { name: "diagnosticRows"; type: "QStringList"; isReadonly: true; notify: "document_changed" }
+        Property { name: "diagnosticText"; type: "QString"; isReadonly: true; notify: "document_changed" }
+        Property { name: "canUndo"; type: "bool"; isReadonly: true; notify: "document_changed" }
+        Property { name: "canRedo"; type: "bool"; isReadonly: true; notify: "document_changed" }
+        Property { name: "selectedFeature"; type: "QString"; isReadonly: true; notify: "document_changed" }
+        Property { name: "documentRevision"; type: "QString"; isReadonly: true; notify: "document_changed" }
+        Property { name: "fileMessage"; type: "QString"; isReadonly: true; notify: "document_changed" }
+        Property { name: "parameterRows"; type: "QVariantList"; isReadonly: true; notify: "document_changed" }
+        Property { name: "cadAvailable"; type: "bool"; isReadonly: true }
+        Method { name: "saveProject"; type: "bool"; Parameter { name: "path"; type: "QString" } }
+        Method { name: "loadProject"; type: "bool"; Parameter { name: "path"; type: "QString" } }
+        Method { name: "newCadDocument"; type: "bool" }
+        Method { name: "loadDocument"; type: "bool"; Parameter { name: "path"; type: "QString" } }
+        Method { name: "saveDocument"; type: "bool"; Parameter { name: "path"; type: "QString" } }
+        Method { name: "selectFeature"; Parameter { name: "index"; type: "int" } }
+        Method { name: "setParameter"; type: "bool"
+            Parameter { name: "id"; type: "QString" }
+            Parameter { name: "value"; type: "double" }
+            Parameter { name: "expected_revision"; type: "QString" }
+        }
+        Property { name: "studyStatus"; type: "QString"; isReadonly: true; notify: "document_changed" }
+        Property { name: "studyFingerprint"; type: "QString"; isReadonly: true; notify: "document_changed" }
+        Property { name: "studyDiagnostics"; type: "QString"; isReadonly: true; notify: "document_changed" }
+        Property { name: "studySummary"; type: "QString"; isReadonly: true; notify: "document_changed" }
+        Property { name: "studyRows"; type: "QStringList"; isReadonly: true; notify: "document_changed" }
+        Property { name: "canPrepareStudy"; type: "bool"; isReadonly: true; notify: "document_changed" }
+        Property { name: "hasStudy"; type: "bool"; isReadonly: true; notify: "document_changed" }
+        Property { name: "studyMinimumFrequency"; type: "double"; isReadonly: true; notify: "document_changed" }
+        Property { name: "studyMaximumFrequency"; type: "double"; isReadonly: true; notify: "document_changed" }
+        Method { name: "prepareStudy"; type: "bool" }
+        Method { name: "setStudyFrequency"; type: "bool"
+            Parameter { name: "minimum"; type: "double" }
+            Parameter { name: "maximum"; type: "double" }
+            Parameter { name: "expected_fingerprint"; type: "QString" }
+        }
+        Property { name: "studyFaces"; type: "QStringList"; isReadonly: true; notify: "document_changed" }
+        Property { name: "studyDefinitions"; type: "QString"; isReadonly: true; notify: "document_changed" }
+        Property { name: "canEditStudy"; type: "bool"; isReadonly: true; notify: "document_changed" }
+        Method { name: "setStudyRole"; type: "bool"
+            Parameter { name: "id"; type: "QString" }
+            Parameter { name: "face_index"; type: "int" }
+            Parameter { name: "keep_out"; type: "bool" }
+            Parameter { name: "expected_fingerprint"; type: "QString" }
+        }
+        Method { name: "setStudyPort"; type: "bool"
+            Parameter { name: "id"; type: "QString" }
+            Parameter { name: "face_index"; type: "int" }
+            Parameter { name: "plane_index"; type: "int" }
+            Parameter { name: "impedance"; type: "double" }
+            Parameter { name: "orientation"; type: "int" }
+            Parameter { name: "expected_fingerprint"; type: "QString" }
+        }
+        Method { name: "removeStudyDefinition"; type: "bool"
+            Parameter { name: "port"; type: "bool" }
+            Parameter { name: "id"; type: "QString" }
+            Parameter { name: "expected_fingerprint"; type: "QString" }
+        }
+        Property { name: "studyMaterialIds"; type: "QStringList"; isReadonly: true; notify: "document_changed" }
+        Property { name: "studyMaterials"; type: "QString"; isReadonly: true; notify: "document_changed" }
+        Method { name: "materialValues"; type: "QVariantMap"; Parameter { name: "id"; type: "QString" } }
+        Method { name: "setStudyMaterial"; type: "bool"
+            Parameter { name: "id"; type: "QString" }
+            Parameter { name: "permittivity"; type: "double" }
+            Parameter { name: "permeability"; type: "double" }
+            Parameter { name: "conductivity"; type: "double" }
+            Parameter { name: "loss_tangent"; type: "double" }
+            Parameter { name: "minimum_frequency"; type: "double" }
+            Parameter { name: "maximum_frequency"; type: "double" }
+            Parameter { name: "provenance"; type: "QString" }
+            Parameter { name: "expected_fingerprint"; type: "QString" }
+        }
+        Method { name: "removeStudyMaterial"; type: "bool"
+            Parameter { name: "id"; type: "QString" }
+            Parameter { name: "expected_fingerprint"; type: "QString" }
+        }
+        Method { name: "assignStudyRole"; type: "bool"
+            Parameter { name: "id"; type: "QString" }
+            Parameter { name: "face_index"; type: "int" }
+            Parameter { name: "kind"; type: "int" }
+            Parameter { name: "material_id"; type: "QString" }
+            Parameter { name: "expected_fingerprint"; type: "QString" }
+        }
+        Property { name: "studyPortIds"; type: "QStringList"; isReadonly: true; notify: "document_changed" }
+        Property { name: "studySetup"; type: "QString"; isReadonly: true; notify: "document_changed" }
+        Method { name: "setStudyBoundary"; type: "bool"
+            Parameter { name: "id"; type: "QString" }
+            Parameter { name: "open_pml"; type: "bool" }
+            Parameter { name: "material_id"; type: "QString" }
+            Parameter { name: "padding"; type: "double" }
+            Parameter { name: "expected_fingerprint"; type: "QString" }
+        }
+        Method { name: "setStudyMonitor"; type: "bool"
+            Parameter { name: "id"; type: "QString" }
+            Parameter { name: "kind"; type: "int" }
+            Parameter { name: "port_id"; type: "QString" }
+            Parameter { name: "minimum_frequency"; type: "double" }
+            Parameter { name: "maximum_frequency"; type: "double" }
+            Parameter { name: "expected_fingerprint"; type: "QString" }
+        }
+        Method { name: "removeStudySetup"; type: "bool"
+            Parameter { name: "boundary"; type: "bool" }
+            Parameter { name: "id"; type: "QString" }
+            Parameter { name: "expected_fingerprint"; type: "QString" }
+        }
+        Signal { name: "document_changed" }
+        Method { name: "undoDocument"; type: "bool" }
+        Method { name: "redoDocument"; type: "bool" }
+        Signal { name: "workspace_changed" }
+        Signal { name: "layout_changed" }
+        Signal { name: "viewport_changed" }
+        Signal { name: "worker_changed" }
+
+        Method {
+            name: "selectWorkspace"
+            Parameter { name: "workspace"; type: "QString" }
+        }
+        Method {
+            name: "setPanelVisible"
+            Parameter { name: "panel"; type: "QString" }
+            Parameter { name: "visible"; type: "bool" }
+        }
+        Method {
+            name: "saveLayout"
+            Parameter { name: "left_width"; type: "double" }
+            Parameter { name: "right_width"; type: "double" }
+            Parameter { name: "bottom_height"; type: "double" }
+            Parameter { name: "left_visible"; type: "bool" }
+            Parameter { name: "right_visible"; type: "bool" }
+            Parameter { name: "bottom_visible"; type: "bool" }
+        }
+        Method { name: "resetLayout" }
+    }
+}

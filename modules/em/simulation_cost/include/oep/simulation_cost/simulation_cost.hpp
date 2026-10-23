@@ -1,6 +1,10 @@
 // SPDX-FileCopyrightText: 2026 Open Engineering Platform contributors
 // SPDX-License-Identifier: MIT
 
+// Estimates resource use before solver allocation and assesses each hard budget.
+// Runtime depends on explicitly supplied calibration observations; an estimate
+// is not a measurement or permission to silently reduce simulation fidelity.
+
 #pragma once
 
 #include <oep/em_mesh/cartesian_grid.hpp>

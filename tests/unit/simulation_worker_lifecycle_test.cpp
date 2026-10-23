@@ -197,6 +197,38 @@ void protocol_version_mismatch_is_typed()
         "worker contract mismatch must remain a typed protocol error");
 }
 
+void durable_recovery_record_is_bounded_and_versioned()
+{
+    const auto request = job_fixture("durable-job");
+    orchestrator::ReferenceSimulationWorker worker("durable-source", solver_build);
+    check(worker.submit(request).succeeded(), "durable fixture submits");
+    check(worker.run_slice(request.job_id, 4).succeeded(), "durable fixture advances");
+    const auto checkpoint = worker.checkpoint(request.job_id);
+    check(checkpoint.succeeded(), "durable fixture checkpoints");
+
+    const orchestrator::WorkerRecoveryRecord record{
+        .job = request,
+        .checkpoint = *checkpoint.checkpoint,
+    };
+    const auto encoded = orchestrator::encode_worker_recovery(record);
+    const auto decoded = orchestrator::decode_worker_recovery(encoded);
+    check(decoded.succeeded() && *decoded.recovery == record,
+        "durable worker record round-trips exact job and solver state");
+
+    auto corrupt = encoded;
+    corrupt.back() ^= std::byte{1};
+    check(!orchestrator::decode_worker_recovery(corrupt).succeeded(),
+        "durable worker record rejects checksum corruption");
+
+    const auto submit_only = oep::ipc::encode_frame(
+        orchestrator::encode_worker_request({
+            .correlation_id = 0,
+            .command = orchestrator::SubmitCommand{.job = request},
+        }));
+    check(!orchestrator::decode_worker_recovery(submit_only).succeeded(),
+        "durable worker record rejects a non-resume operation");
+}
+
 } // namespace
 
 int main()
@@ -205,6 +237,7 @@ int main()
     execution_checkpoint_restart_and_collection_are_consistent();
     cancellation_and_checkpoint_mismatch_do_not_leak_results();
     protocol_version_mismatch_is_typed();
+    durable_recovery_record_is_bounded_and_versioned();
     std::cout << "Simulation worker validation, execution, cancellation, restart, and collection checks passed\n";
     return EXIT_SUCCESS;
 }

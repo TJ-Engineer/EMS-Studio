@@ -273,6 +273,8 @@ Start with a renderer abstraction and two possible deliveries:
 
 Qt's rendering infrastructure can target Direct3D, Vulkan, Metal, and OpenGL, but avoid making private Qt APIs a permanent public dependency. The viewport contract should accept immutable scene packets: mesh buffers, edge polylines, materials, transforms, visibility, and persistent selection IDs.
 
+The current native integration translates OCCT display tessellation through reconciled topology bindings into immutable packets. Renderer-neutral assemblies add shared mesh LODs, instance transforms, materials, visibility, and occurrence-qualified persistent selection. The Qt CPU/Canvas path supplies camera navigation, Z clipping, preselection, and selection. A strict-debug corpus representing 1,048,576 source triangles passes the 16.667 ms core-projection gate through budget-selected LODs. GPU-resident buffers and the broader ten-million-triangle qualification remain planned work; see [ADR 0011](../architecture/decisions/0011-immutable-viewport-scene-packets.md) and the [viewport SDD](../architecture/sdd/VIEWPORT_SDD.md).
+
 ### Why not Rust-first?
 
 Rust improves memory safety in code it owns, but a Rust-first CAD core would still spend much of its time across C/C++ FFI. Rust documentation notes that direct C++ ABI interoperability is not generally stable and C-compatible interfaces need explicit layouts and unsafe boundaries. That boundary would contain lifetimes, callbacks, kernel-owned handles, exceptions, and large object graphs. Use Rust later for carefully isolated parsers, sync clients, package validation, or other components whose interfaces can be narrow and C-compatible.

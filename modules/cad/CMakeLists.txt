@@ -10,9 +10,27 @@ target_include_directories(
 )
 oep_apply_target_defaults(oep_sketch)
 oep_add_boundary_library(assembly assembly)
-oep_add_boundary_library(tessellation tessellation)
-oep_add_boundary_library(viewport viewport)
 oep_add_boundary_library(exchange exchange)
+
+add_library(oep_tessellation STATIC tessellation/src/scene_packet.cpp)
+add_library(oep::tessellation ALIAS oep_tessellation)
+target_include_directories(
+    oep_tessellation
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/tessellation/include>
+)
+target_link_libraries(oep_tessellation PUBLIC oep::modeler oep::topology_id)
+oep_apply_target_defaults(oep_tessellation)
+
+add_library(oep_viewport STATIC viewport/src/viewport.cpp)
+add_library(oep::viewport ALIAS oep_viewport)
+target_include_directories(
+    oep_viewport
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/viewport/include>
+)
+target_link_libraries(oep_viewport PUBLIC oep::tessellation)
+oep_apply_target_defaults(oep_viewport)
 
 add_library(oep_modeler STATIC modeler/src/kernel_adapter.cpp)
 add_library(oep::modeler ALIAS oep_modeler)
@@ -75,6 +93,7 @@ if(OEP_ENABLE_OCCT_ADAPTER)
         TKShHealing
         TKBool
         TKFillet
+        TKMesh
     )
     set(OEP_OCCT_LINK_LIBRARIES)
     foreach(library_name IN LISTS OEP_OCCT_REQUIRED_LIBRARIES)
@@ -108,6 +127,4 @@ if(OEP_ENABLE_OCCT_ADAPTER)
 endif()
 
 target_link_libraries(oep_assembly INTERFACE oep::document oep::modeler)
-target_link_libraries(oep_tessellation INTERFACE oep::document oep::modeler oep::topology_id)
-target_link_libraries(oep_viewport INTERFACE oep::interaction oep::tessellation)
 target_link_libraries(oep_exchange INTERFACE oep::document oep::modeler)

@@ -17,13 +17,38 @@ option(OEP_BUILD_APPS "Build desktop application entry points" ON)
 option(OEP_BUILD_WORKERS "Build model and simulation worker entry points" ON)
 option(OEP_ENABLE_STRICT_WARNINGS "Treat compiler warnings as errors" OFF)
 option(OEP_ENABLE_OCCT_ADAPTER "Build the Open CASCADE geometry-kernel adapter" OFF)
+option(OEP_ENABLE_QT_SHELL "Build the native Qt Quick application shell" OFF)
 set(OEP_OCCT_ROOT "" CACHE PATH "Optional Open CASCADE installation prefix")
 set(OEP_OCCT_VERSION "7.6.3" CACHE STRING "Open CASCADE version exposed by the adapter")
+set(OEP_QT_ROOT "" CACHE PATH "Optional Qt installation prefix")
+set(OEP_QT_VERSION "6.4.2" CACHE STRING "Exact Qt release used by the native shell")
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+if(OEP_ENABLE_QT_SHELL)
+    if(OEP_QT_ROOT)
+        list(PREPEND CMAKE_PREFIX_PATH "${OEP_QT_ROOT}")
+        list(
+            PREPEND CMAKE_LIBRARY_PATH
+            "${OEP_QT_ROOT}/lib"
+            "${OEP_QT_ROOT}/lib/${CMAKE_LIBRARY_ARCHITECTURE}"
+        )
+        list(PREPEND CMAKE_INCLUDE_PATH "${OEP_QT_ROOT}/include")
+    endif()
+    find_package(
+        Qt6 ${OEP_QT_VERSION}
+        EXACT
+        REQUIRED
+        COMPONENTS Core Gui Qml Quick QuickControls2
+    )
+    message(
+        STATUS
+        "Native shell: Qt ${Qt6_VERSION}; modules: Core, Gui, Qml, Quick, QuickControls2"
+    )
+endif()
 
 add_subdirectory(modules)
 

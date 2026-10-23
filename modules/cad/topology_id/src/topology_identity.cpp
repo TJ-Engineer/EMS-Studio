@@ -1,6 +1,10 @@
 // SPDX-FileCopyrightText: 2026 Open Engineering Platform contributors
 // SPDX-License-Identifier: MIT
 
+// Persistent topology identity is separate from transient kernel entity IDs.
+// Reconciliation combines operation provenance with geometric signatures;
+// ambiguous or deleted references must be diagnosed rather than silently rebound.
+
 #include <oep/topology_id/topology_identity.hpp>
 
 #include <algorithm>
@@ -110,6 +114,8 @@ using modeler::TopologyKind;
     return (dot + 1.0) * 0.5;
 }
 
+// Geometric similarity supports reference reconciliation; a score alone
+// is not proof of identity. Ambiguous candidates must remain explicit.
 [[nodiscard]] double signature_similarity(
     const GeometricSignature& previous,
     const TopologyDescriptor& current)

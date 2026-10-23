@@ -1,6 +1,10 @@
 // SPDX-FileCopyrightText: 2026 Open Engineering Platform contributors
 // SPDX-License-Identifier: MIT
 
+// Versioned binary IPC framing with correlation IDs, integrity checks, and
+// bounded decoding. Checksums detect corruption; they do not authenticate a peer.
+// Message-specific payload validation belongs to the consuming protocol.
+
 #pragma once
 
 #include <cstddef>
@@ -22,6 +26,8 @@ struct Frame {
     bool operator==(const Frame&) const = default;
 };
 
+// Receiver-owned limits apply before payload allocation. Increasing these
+// values changes memory exposure and should be accompanied by boundary tests.
 struct FrameLimits {
     std::uint64_t maximum_payload_bytes{64ULL * 1024ULL * 1024ULL};
     std::uint32_t maximum_frames{4'096};

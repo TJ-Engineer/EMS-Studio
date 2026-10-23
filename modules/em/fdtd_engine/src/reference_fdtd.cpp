@@ -1,6 +1,10 @@
 // SPDX-FileCopyrightText: 2026 Open Engineering Platform contributors
 // SPDX-License-Identifier: MIT
 
+// FP64 CPU Yee solver used as the numerical correctness reference. Electric
+// and magnetic fields occupy staggered locations and times; preserve that
+// convention in updates, energy calculations, and checkpoint restoration.
+
 #include <oep/fdtd/reference_fdtd.hpp>
 
 #include <algorithm>
@@ -458,6 +462,8 @@ std::optional<double> YeeGrid1d::sample(const ElectricProbe1d& probe) const
     return electric_[probe.node];
 }
 
+// Advance magnetic and electric fields in Yee order. Source and boundary
+// handling must preserve the staggered-time convention used by energy tests.
 StepResult YeeGrid1d::step(const std::span<const ElectricSource1d> sources)
 {
     StepResult result;
@@ -892,6 +898,8 @@ void YeeGrid3d::center_magnetic_half_step_from_electric()
     }
 }
 
+// Each component has its own staggered extent. Curl neighbor accesses and
+// PEC tangential constraints must follow those extents, not a shared cell shape.
 StepResult YeeGrid3d::step(const std::span<const ElectricSource3d> sources)
 {
     StepResult result;

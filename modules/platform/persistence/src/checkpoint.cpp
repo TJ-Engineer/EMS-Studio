@@ -1,6 +1,10 @@
 // SPDX-FileCopyrightText: 2026 Open Engineering Platform contributors
 // SPDX-License-Identifier: MIT
 
+// Internal document recovery format with bounded, checksummed decoding and
+// atomic file replacement. Decoding reconstructs value state; Document::restore
+// validates semantic history, and CAD evaluators hydrate exact artifacts separately.
+
 #include <oep/persistence/checkpoint.hpp>
 
 #include <algorithm>
@@ -125,6 +129,8 @@ private:
     std::vector<std::byte> bytes_;
 };
 
+// Decode only within the caller-supplied limits. Binary well-formedness
+// does not establish document history validity; restoration checks that later.
 class Decoder {
 public:
     Decoder(const std::span<const std::byte> bytes, const CheckpointDecodeLimits& limits)
@@ -727,6 +733,8 @@ void write_and_replace(
             }
             offset += static_cast<std::size_t>(written);
         }
+        // Persist the sibling file before replacing the destination. The later
+        // directory sync makes the rename durable across a crash on POSIX systems.
         if (::fsync(file_descriptor) != 0) {
             throw std::system_error(
                 errno, std::generic_category(), "cannot flush checkpoint temporary file");
@@ -824,6 +832,12 @@ DocumentState decode_document_checkpoint(
         throw CheckpointFormatError("checkpoint contains trailing payload data");
     }
     return state;
+}
+
+void save_checkpoint_bytes_atomic(const std::filesystem::path& path, std::span<const std::byte> bytes)
+{
+    if (path.empty()) throw std::invalid_argument("checkpoint path must not be empty");
+    write_and_replace(path, bytes);
 }
 
 void save_document_checkpoint_atomic(
